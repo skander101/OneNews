@@ -1,0 +1,98 @@
+import os
+from dataclasses import dataclass, field
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+@dataclass
+class Config:
+    # Reddit API credentials (only needed if you use --source reddit)
+    reddit_client_id: str = os.getenv("REDDIT_CLIENT_ID", "")
+    reddit_client_secret: str = os.getenv("REDDIT_CLIENT_SECRET", "")
+    reddit_user_agent: str = os.getenv("REDDIT_USER_AGENT", "newsapp/1.0")
+
+    # RSS news feeds (default source, works without any API key)
+    rss_feeds: list[str] = field(default_factory=lambda: [
+        # ---- Geopolitical ----
+        "https://feeds.bbci.co.uk/news/world/rss.xml",
+        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml",
+        "https://feeds.npr.org/1001/rss.xml",
+        "https://www.aljazeera.com/xml/rss/all.xml",
+        "https://www.theguardian.com/world/rss",
+        # ---- World Health ----
+        "https://feeds.bbci.co.uk/news/health/rss.xml",
+        "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
+        "https://www.statnews.com/feed/",
+        "https://www.sciencedaily.com/rss/all.xml",
+        # ---- Tech ----
+        "https://feeds.bbci.co.uk/news/technology/rss.xml",
+        "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+        "https://techcrunch.com/feed/",
+        "https://www.wired.com/feed/rss",
+        "https://www.theverge.com/rss/index.xml",
+        "https://arstechnica.com/feed/",
+        # ---- Cybersecurity ----
+        "https://feeds.feedburner.com/TheHackerNews",
+        "https://krebsonsecurity.com/feed/",
+        "https://www.bleepingcomputer.com/feed/",
+        "https://threatpost.com/feed/",
+        "https://therecord.media/feed/",
+        # ---- Funny / Weird ----
+        "https://www.theonion.com/rss",
+        "https://www.reddit.com/r/nottheonion/.rss",
+        "https://www.thedailymash.co.uk/feed",
+        "https://babylonbee.com/feed",
+        # ---- Gaming ----
+        "https://feeds.ign.com/ign/all",
+        "https://www.eurogamer.net/feed",
+        "https://www.pcgamer.com/rss/",
+        "https://www.kotaku.com/rss",
+        "https://www.gamespot.com/feeds/news/",
+        "https://www.polygon.com/rss/index.xml",
+        # ---- Movies ----
+        "https://variety.com/feed/",
+        "https://www.hollywoodreporter.com/feed/",
+        "https://deadline.com/feed/",
+        "https://screenrant.com/feed/",
+        # ---- Arab World ----
+        "https://www.arabnews.com/rss.xml",
+        "https://www.middleeasteye.net/rss",
+        "https://www.newarab.com/rss.xml",
+        "https://www.france24.com/en/middle-east/rss",
+        # ---- Tunisia ----
+        "https://www.tunisiaonlinenews.com/feed/",
+        "https://northafricapost.com/feed/",
+        "https://www.africanews.com/feed/",
+    ])
+
+    # Subreddits (used for --source reddit or --source rss)
+    news_subreddits: list[str] = field(default_factory=lambda: [
+        "worldnews", "news", "politics", "science", "technology",
+        "UpliftingNews", "economy", "geopolitics",
+    ])
+
+    posts_per_subreddit: int = 3
+
+    # --- Scoring weights ---
+    weight_popularity: float = 0.20
+    weight_trustworthiness: float = 0.35
+    weight_coverage: float = 0.30
+    weight_recency: float = 0.15
+
+    # --- User interests (used for topic matching) ---
+    user_interests: list[str] = field(default_factory=lambda: [
+        "artificial intelligence", "climate change", "health",
+        "economy", "space exploration", "cybersecurity",
+        "democracy", "science",
+    ])
+
+    # --- NLP model settings ---
+    # Set use_local_models=False to skip heavy model downloads (uses keyword fallbacks)
+    use_local_models: bool = False
+    summarization_model: str = "t5-small"
+    embedding_model: str = "all-MiniLM-L6-v2"
+
+    # --- Clustering ---
+    similarity_threshold: float = 0.70
