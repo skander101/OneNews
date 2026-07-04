@@ -1,9 +1,3 @@
-"""
-hn_scraper.py — Collects news posts from Hacker News (free, no API key).
-
-HN's Firebase API is publicly accessible with no authentication.
-"""
-
 import logging
 from datetime import datetime, timezone
 from urllib.parse import urlparse
@@ -22,7 +16,6 @@ class HackerNewsScraper:
         self.config = config
 
     def fetch_posts(self) -> list[RedditPost]:
-        # Fetch top story IDs (HN returns up to 500)
         resp = requests.get(f"{API_BASE}/topstories.json", timeout=15)
         resp.raise_for_status()
         all_ids = resp.json()

@@ -1,7 +1,3 @@
-"""
-presenter.py — Formats and prints news clusters to the terminal.
-"""
-
 from collections import defaultdict
 
 from .models import NewsCluster
@@ -30,7 +26,6 @@ class NewsPresenter:
 
         for cat in NewsPresenter.CATEGORIES:
             items = by_cat.get(cat, [])
-            # Sort by ISO date desc, then score desc
             items.sort(key=lambda x: (x.articles[0].post.published_iso or "", x.final_score), reverse=True)
             items = items[:top_n]
             if not items:

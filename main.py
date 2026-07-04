@@ -1,21 +1,4 @@
 #!/usr/bin/env python3
-"""
-main.py — Entry point for the GenAI News App.
-
-Pipeline:
-  1. Scrape Reddit for news posts
-  2. Extract article content from linked URLs
-  3. Analyse each article (summarise, classify, score trustworthiness)
-  4. Cluster related stories and rank them
-  5. Display the top clusters to the user
-
-Usage:
-  python main.py                          # RSS news feeds (default, free)
-  python main.py --source hn              # Hacker News (tech-heavy)
-  python main.py --source reddit          # Reddit via PRAW (needs API key)
-  python main.py --demo                   # sample data (no internet)
-  python main.py --models                 # + GenAI models
-"""
 
 import argparse
 import logging
@@ -37,35 +20,19 @@ logging.basicConfig(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="GenAI-powered news aggregator")
-    parser.add_argument(
-        "--demo", action="store_true",
-        help="Run with sample data (no internet needed)",
-    )
-    parser.add_argument(
-        "--source", choices=["feeds", "hn", "reddit"], default=None,
-        help="Data source: feeds (RSS news feeds, default), hn (Hacker News), reddit (PRAW, needs API key)",
-    )
-    parser.add_argument(
-        "--models", action="store_true",
-        help="Enable local HuggingFace models (slower but smarter)",
-    )
-    parser.add_argument(
-        "--subreddits", nargs="+", default=None,
-        help="Override subreddit list (space-separated)",
-    )
-    parser.add_argument(
-        "--limit", type=int, default=None,
-        help="Posts per subreddit (default: config value)",
-    )
+    parser = argparse.ArgumentParser(description="OneNews — RSS news aggregator")
+    parser.add_argument("--demo", action="store_true", help="Use sample data (no internet)")
+    parser.add_argument("--source", choices=["feeds", "hn", "reddit"], default=None,
+                        help="Data source (default: RSS feeds)")
+    parser.add_argument("--models", action="store_true", help="Enable local ML models (slower)")
+    parser.add_argument("--subreddits", nargs="+", default=None, help="Override subreddits")
+    parser.add_argument("--limit", type=int, default=None, help="Posts per subreddit")
     return parser.parse_args()
 
 
 def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = False):
-    """Shared pipeline: extract → analyse → cluster → present."""
-    # ---- Stage 2: Extract articles -----------------------------------------
     if not skip_extraction:
-        print("═══  Stage 2: Extracting article content  ═══")
+        print("═══  Extracting article content  ═══")
         extractor = ArticleExtractor()
         for i, item in enumerate(items, 1):
             print(f"  [{i:>2}/{len(items)}] {item.post.title[:60]:<60}  ", end="", flush=True)
@@ -81,34 +48,26 @@ def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = Fal
                     extraction_success=False,
                     image_url=item.post.image_url,
                 )
-                print(f"✗  (using title only)")
+                print(f"✗  (title only)")
             item.article = article
     else:
-        print("═══  Stage 2: Skipped (articles already loaded)  ═══")
+        print("═══  Extraction skipped (articles already loaded)  ═══")
 
-    # ---- Stage 3: NLP Analysis ---------------------------------------------
-    print("\n═══  Stage 3: Analysing articles (GenAI / NLP)  ═══")
-    if cfg.use_local_models:
-        print("  (local models enabled — first load may download files)")
-    else:
-        print("  (rule-based analysis — use --models for NN models)")
-
+    print("\n═══  Analysing articles  ═══")
     analyzer = NewsAnalyzer(cfg)
     for i, item in enumerate(items, 1):
         print(f"  [{i:>2}/{len(items)}] analysing ...  ", end="", flush=True)
         item.analysis = analyzer.analyze(item.article)
         cat = item.analysis.category
-        topics = ", ".join(item.analysis.topics) if item.analysis.topics else "(none detected)"
+        topics = ", ".join(item.analysis.topics) if item.analysis.topics else "(none)"
         print(f"{cat:<14} topic: {topics:<30} trust: {item.analysis.trustworthiness_score:.0%}")
 
-    # ---- Stage 4: Cluster & Rank -------------------------------------------
-    print("\n═══  Stage 4: Clustering & ranking  ═══")
+    print("\n═══  Clustering & ranking  ═══")
     aggregator = NewsAggregator(cfg)
     clusters = aggregator.cluster_news(items)
     print(f"  → {len(clusters)} story clusters found\n")
 
-    # ---- Stage 5: Present --------------------------------------------------
-    print("═══  Stage 5: Results  ═══")
+    print("═══  Results  ═══")
     presenter = NewsPresenter()
     presenter.display(clusters)
 
@@ -129,12 +88,11 @@ def main():
 
     total_start = time.perf_counter()
 
-    # ---- Stage 1: Collect data ------------------------------------------------
     source = args.source or "feeds"
 
     if args.demo:
         from src.mockdata import generate_demo_items
-        print("═══  Stage 1: Loading demo data  ═══")
+        print("═══  Loading demo data  ═══")
         items = generate_demo_items()
         print(f"  → {len(items)} sample articles loaded\n")
         clusters = run_pipeline(items, cfg, skip_extraction=True)
@@ -142,7 +100,7 @@ def main():
 
     elif source == "hn":
         from src.hn_scraper import HackerNewsScraper
-        print("═══  Stage 1: Scraping Hacker News  ═══")
+        print("═══  Scraping Hacker News  ═══")
         scraper = HackerNewsScraper(cfg)
         posts = scraper.fetch_posts()
         n_posts = len(posts)
@@ -154,7 +112,7 @@ def main():
 
     elif source == "reddit":
         from src.scraper import RedditScraper
-        print("═══  Stage 1: Scraping Reddit (PRAW)  ═══")
+        print("═══  Scraping Reddit  ═══")
         scraper = RedditScraper(cfg)
         posts = scraper.fetch_posts()
         n_posts = len(posts)
@@ -164,9 +122,9 @@ def main():
         items = [NewsItem(post=p) for p in posts]
         clusters = run_pipeline(items, cfg)
 
-    else:  # feeds (default)
+    else:
         from src.rss_feed_scraper import RSSFeedScraper
-        print("═══  Stage 1: Fetching RSS news feeds  ═══")
+        print("═══  Fetching RSS news feeds  ═══")
         scraper = RSSFeedScraper(cfg)
         posts = scraper.fetch_posts()
         n_posts = len(posts)
@@ -177,8 +135,7 @@ def main():
         clusters = run_pipeline(items, cfg)
 
     elapsed = time.perf_counter() - total_start
-    print(f"\n  Done in {elapsed:.1f}s — {n_posts} posts, {len(clusters)} clusters")
-    print()
+    print(f"\n  Done in {elapsed:.1f}s — {n_posts} posts, {len(clusters)} clusters\n")
 
 
 if __name__ == "__main__":

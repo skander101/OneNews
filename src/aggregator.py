@@ -1,10 +1,3 @@
-"""
-aggregator.py — Clusters related news items and ranks them.
-
-Uses sentence embeddings (sentence-transformers) for similarity when available,
-keyword overlap otherwise.  Then computes a composite score per cluster.
-"""
-
 import logging
 from collections import Counter
 from typing import Optional
@@ -20,9 +13,6 @@ class NewsAggregator:
         self._encoder = None
         self._setup_encoder()
 
-    # ------------------------------------------------------------------
-    # Model loading
-    # ------------------------------------------------------------------
     def _setup_encoder(self):
         if not self.config.use_local_models:
             logger.info("Local models disabled — using keyword similarity")
@@ -37,14 +27,11 @@ class NewsAggregator:
         except Exception as exc:
             logger.warning("Embedding model failed: %s", exc)
 
-    # ------------------------------------------------------------------
-    # Similarity
-    # ------------------------------------------------------------------
     def compute_similarity(self, a: str, b: str) -> float:
         if self._encoder:
             emb_a = self._encoder.encode(a, normalize_embeddings=True)
             emb_b = self._encoder.encode(b, normalize_embeddings=True)
-            return float(emb_a @ emb_b)  # cosine
+            return float(emb_a @ emb_b)
         return self._keyword_overlap(a, b)
 
     @staticmethod
@@ -56,9 +43,6 @@ class NewsAggregator:
         common = words_a & words_b
         return len(common) / max(len(words_a), len(words_b))
 
-    # ------------------------------------------------------------------
-    # Clustering
-    # ------------------------------------------------------------------
     def cluster_news(self, items: list[NewsItem]) -> list[NewsCluster]:
         clusters: list[list[NewsItem]] = []
 
@@ -84,9 +68,6 @@ class NewsAggregator:
 
         return self._rank_clusters(clusters)
 
-    # ------------------------------------------------------------------
-    # Ranking
-    # ------------------------------------------------------------------
     def _rank_clusters(self, raw: list[list[NewsItem]]) -> list[NewsCluster]:
         scored = []
         for group in raw:
@@ -95,7 +76,7 @@ class NewsAggregator:
 
             topic = self._main_topic(group)
 
-            # Best post = highest upvotes
+            # Highest scoring post represents the cluster
             best = max(group, key=lambda x: x.post.score)
 
             avg_trust = sum(
@@ -104,7 +85,7 @@ class NewsAggregator:
 
             avg_pop = sum(it.post.score for it in group) / max(len(group), 1)
 
-            # Best image: first non-empty image_url
+            # Pick the first non-empty image
             image_url = ""
             for it in group:
                 src = it.article.image_url if it.article else ""
@@ -131,15 +112,12 @@ class NewsAggregator:
 
         return sorted(scored, key=lambda c: c.final_score, reverse=True)
 
-    # ------------------------------------------------------------------
-    # Composite score for a cluster  (wider spread)
-    # ------------------------------------------------------------------
     def _cluster_score(self, group: list[NewsItem], avg_trust: float) -> float:
         scores = []
         for item in group:
-            s = avg_trust * 0.50  # trust is the base
+            s = avg_trust * 0.50
 
-            # Content quality: text length relative to title
+            # Content quality: longer articles score higher
             if item.article and item.article.text:
                 title_len = len(item.article.title or "")
                 text_len = len(item.article.text)
@@ -148,17 +126,17 @@ class NewsAggregator:
                 elif text_len > title_len * 1.5:
                     s += 0.08
 
-            # Extraction bonus
+            # Successfully extracted vs title-only
             if item.article and item.article.extraction_success:
                 s += 0.10
             else:
                 s -= 0.10
 
-            # Topics bonus (more topics = richer)
+            # More topics = richer article
             if item.analysis and item.analysis.topics:
                 s += min(len(item.analysis.topics) * 0.06, 0.18)
 
-            # Category assigned bonus
+            # Having a category means we actually understood it
             if item.analysis and item.analysis.category != "General":
                 s += 0.05
 
@@ -166,9 +144,6 @@ class NewsAggregator:
 
         return sum(scores) / max(len(scores), 1)
 
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
     @staticmethod
     def _main_topic(cluster: list[NewsItem]) -> str:
         counter: Counter[str] = Counter()

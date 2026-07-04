@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""
-webapp.py — Local Flask dashboard for the GenAI News App.
-"""
-
 import logging
 import sys
 import threading
@@ -79,9 +74,7 @@ def index():
     grouped_by_date = {}
     for cat in CATEGORIES:
         items = by_cat.get(cat, [])
-        # Sort by date desc, then score desc
         items.sort(key=lambda x: (x["articles"][0]["published_iso"] or "", x["score"]), reverse=True)
-        # Group consecutive same-date items together
         date_groups = []
         seen_date = None
         for item in items:

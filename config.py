@@ -7,12 +7,10 @@ load_dotenv()
 
 @dataclass
 class Config:
-    # Reddit API credentials (only needed if you use --source reddit)
     reddit_client_id: str = os.getenv("REDDIT_CLIENT_ID", "")
     reddit_client_secret: str = os.getenv("REDDIT_CLIENT_SECRET", "")
     reddit_user_agent: str = os.getenv("REDDIT_USER_AGENT", "newsapp/1.0")
 
-    # RSS news feeds (default source, works without any API key)
     rss_feeds: list[str] = field(default_factory=lambda: [
         # ---- Geopolitical ----
         "https://feeds.bbci.co.uk/news/world/rss.xml",
@@ -67,7 +65,7 @@ class Config:
         "https://www.africanews.com/feed/",
     ])
 
-    # Subreddits (used for --source reddit or --source rss)
+    # Fallback subreddits (used for --source reddit or --source rss)
     news_subreddits: list[str] = field(default_factory=lambda: [
         "worldnews", "news", "politics", "science", "technology",
         "UpliftingNews", "economy", "geopolitics",
@@ -75,24 +73,19 @@ class Config:
 
     posts_per_subreddit: int = 3
 
-    # --- Scoring weights ---
     weight_popularity: float = 0.20
     weight_trustworthiness: float = 0.35
     weight_coverage: float = 0.30
     weight_recency: float = 0.15
 
-    # --- User interests (used for topic matching) ---
     user_interests: list[str] = field(default_factory=lambda: [
         "artificial intelligence", "climate change", "health",
         "economy", "space exploration", "cybersecurity",
         "democracy", "science",
     ])
 
-    # --- NLP model settings ---
-    # Set use_local_models=False to skip heavy model downloads (uses keyword fallbacks)
     use_local_models: bool = False
     summarization_model: str = "t5-small"
     embedding_model: str = "all-MiniLM-L6-v2"
 
-    # --- Clustering ---
     similarity_threshold: float = 0.70

@@ -1,16 +1,3 @@
-"""
-scraper.py — Collects posts from Reddit news subreddits via the official API.
-
-Requires Reddit API credentials (client_id + client_secret).  These are free
-and quick to set up:
-  1. Go to https://www.reddit.com/prefs/apps
-  2. Click "create app" → choose "script"
-  3. Copy the client ID (under the app name) and secret
-  4. Set them in a .env file or export as environment variables
-
-If no credentials are available the scraper will raise a clear error.
-"""
-
 import logging
 from urllib.parse import urlparse
 
@@ -25,9 +12,6 @@ class RedditScraper:
         self._praw = None
         self._init_praw()
 
-    # ------------------------------------------------------------------
-    # PRAW initialisation
-    # ------------------------------------------------------------------
     def _init_praw(self):
         cid = self.config.reddit_client_id
         secret = self.config.reddit_client_secret
@@ -48,9 +32,6 @@ class RedditScraper:
         except ImportError:
             raise ImportError("praw is required. Install with: pip install praw")
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
     def fetch_posts(self) -> list[RedditPost]:
         seen = set()
         posts = []

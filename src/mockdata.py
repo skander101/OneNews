@@ -1,8 +1,3 @@
-"""
-mockdata.py — Generates realistic demo news items for testing the pipeline
-without Reddit API credentials.
-"""
-
 import random
 import time
 

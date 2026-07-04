@@ -1,10 +1,3 @@
-"""
-rss_feed_scraper.py — Aggregates news from any RSS/Atom feeds.
-
-Covers all topics — world, politics, tech, science, health, business, climate.
-No API keys needed.
-"""
-
 import logging
 import time
 from email.utils import parsedate_to_datetime
@@ -159,10 +152,8 @@ class RSSFeedScraper:
             iso = dt.strftime("%Y-%m-%d")
             return (display, iso)
         except Exception:
-            # Fallback: if raw looks like ISO, use it as both
             if len(raw) >= 10 and raw[4] == "-" and raw[7] == "-":
                 iso = raw[:10]
-                # Try to make a readable display from it
                 from datetime import datetime
                 try:
                     dt = datetime.strptime(iso, "%Y-%m-%d")

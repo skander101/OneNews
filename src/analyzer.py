@@ -1,13 +1,3 @@
-"""
-analyzer.py — NLP pipeline for news articles.
-
-  1. Summarise article text (T5-small or sentence extraction)
-  2. Classify topics (zero-shot DistilBERT or keyword matching with word boundaries)
-  3. Assess trustworthiness (wide 0.1–1.0 spread with length/source/text-quality signals)
-  4. Detect opinion vs. factual reporting
-  5. Estimate political leaning
-"""
-
 import html
 import logging
 import re
@@ -17,9 +7,6 @@ from .models import Analysis, Article
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Known domains with credibility bonuses (wider spread)
-# ---------------------------------------------------------------------------
 RELIABLE_DOMAINS = {
     "reuters.com": 0.20, "apnews.com": 0.20, "bbc.com": 0.15,
     "bbc.co.uk": 0.15, "npr.org": 0.12, "wsj.com": 0.12,
@@ -51,8 +38,6 @@ LEFT_KEYWORDS = ["progressive", "equality", "social justice", "climate crisis",
 RIGHT_KEYWORDS = ["deregulation", "tax cuts", "free market", "traditional",
                   "sovereignty", "patriot", "heritage", "small government"]
 
-# Topic keywords with word-boundary matching
-# Note: use r"\bhack" (no trailing \b) to match "hackers", "hacked", "hacking" too
 TOPIC_MAP: dict[str, list[str]] = {
     "artificial intelligence": [r"\bai\b", r"\bartificial intelligence\b",
                                 r"\bmachine learning\b", r"\bgpt\b", r"\bllm\b",
@@ -97,8 +82,8 @@ TOPIC_MAP: dict[str, list[str]] = {
                    r"\bconsole\b", r"\bmobile\b", r"\bphone\b", r"\blaptop\b",
                    r"\bsmartphone\b", r"\bgadget\b", r"\bstartup\b",
                    r"\bplatform\b", r"\bdeveloper\b", r"\bcode\b", r"\bprogramming\b",
-                   r"\bdigital\b", r"\bcloud\b", r"\bdevice\b", r"\bsmart\b", r"\bIoT\b",
-                   r"\bOS\b", r"\bWindows\b", r"\bAndroid\b", r"\biOS\b",
+                   r"\bdigital\b", r"\bcloud\b", r"\bdevice\b", r"\bsmart\b",
+                   r"\bIoT\b", r"\bOS\b", r"\bWindows\b", r"\bAndroid\b", r"\biOS\b",
                    r"\bPlayStation\b", r"\bapp\b", r"\bAI\b", r"\bA\.I",
                    r"\bEV\b", r"\belectric vehicle\b", r"\bgadget\b",
                    r"\btechlash\b"],
@@ -154,7 +139,6 @@ TOPIC_MAP: dict[str, list[str]] = {
                    r"\bOPEC\b", r"\bMENA\b"],
 }
 
-# Map detected topics -> target display categories
 TOPIC_TO_CATEGORY: dict[str, str] = {
     "politics": "Geopolitical",
     "world": "Geopolitical",
@@ -193,9 +177,6 @@ class NewsAnalyzer:
         self._classifier = None
         self._setup_models()
 
-    # ------------------------------------------------------------------
-    # Model loading (lazy)
-    # ------------------------------------------------------------------
     def _setup_models(self):
         if not self.config.use_local_models:
             logger.info("Local models disabled — using rule-based analysis")
@@ -218,9 +199,6 @@ class NewsAnalyzer:
         except Exception as exc:
             logger.warning("Model loading failed: %s — using rule-based", exc)
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
     def analyze(self, article: Article) -> Analysis:
         summary = self._summarise(article)
         topics = self._classify_topics(article, summary)
@@ -239,9 +217,6 @@ class NewsAnalyzer:
             category=category,
         )
 
-    # ------------------------------------------------------------------
-    # 1. Summarisation
-    # ------------------------------------------------------------------
     def _summarise(self, article: Article) -> str:
         title = article.title or ""
         text = article.text or ""
@@ -300,7 +275,6 @@ class NewsAnalyzer:
         first = lines[0].strip()
         if not first:
             return "\n".join(lines[1:]).strip()
-        # Drop first line if it looks like a headline (short, no sentence-end punctuation)
         if len(first) < 150 and not re.search(r"[.!?]$", first):
             return "\n".join(lines[1:]).strip()
         return text
@@ -316,9 +290,6 @@ class NewsAnalyzer:
             cleaned.append(line)
         return "\n".join(cleaned).strip()
 
-    # ------------------------------------------------------------------
-    # 2. Topic classification
-    # ------------------------------------------------------------------
     def _classify_topics(self, article: Article, summary: str) -> list[str]:
         if self._classifier:
             try:
@@ -368,24 +339,20 @@ class NewsAnalyzer:
                 found.append(topic)
         domain = re.sub(r"^www\.", "", (article.source_domain or ""))
         mapped = self.DOMAIN_TOPICS.get(domain)
+        # Only use domain fallback if keyword matching found nothing
         if mapped and mapped not in found:
             if not found:
                 found.append(mapped)
         return found
 
-    # ------------------------------------------------------------------
-    # 3. Trustworthiness score  (0.0 – 1.0) — wider spread
-    # ------------------------------------------------------------------
     def _assess_trustworthiness(self, article: Article) -> float:
-        score = 0.40  # lower base for wider spread
+        score = 0.40
 
-        # --- Source reputation ---
         domain = article.source_domain or ""
         clean_domain = re.sub(r"^www\.", "", domain)
         score += RELIABLE_DOMAINS.get(clean_domain, 0.0)
         score += UNRELIABLE_DOMAINS.get(clean_domain, 0.0)
 
-        # --- Extraction success ---
         text = article.text or ""
         title = article.title or ""
         if article.extraction_success is False:
@@ -393,7 +360,6 @@ class NewsAnalyzer:
         elif len(text) > len(title) * 3:
             score += 0.05
 
-        # --- Text length bonus (well-developed articles) ---
         word_count = len(text.split())
         if word_count > 200:
             score += 0.10
@@ -402,26 +368,19 @@ class NewsAnalyzer:
         elif word_count > 50:
             score += 0.02
 
-        # --- Factual language bonus ---
         factual_count = sum(1 for p in FACTUAL_KEYWORDS if re.search(p, text, re.IGNORECASE))
         score += min(factual_count * 0.02, 0.08)
 
-        # --- Clickbait penalty ---
         if any(re.search(p, title, re.IGNORECASE) for p in CLICKBAIT_PATTERNS):
             score -= 0.20
 
-        # --- Opinion marker penalty ---
-        opinion_count = sum(
-            1 for p in OPINION_MARKERS if re.search(p, text, re.IGNORECASE)
-        )
+        opinion_count = sum(1 for p in OPINION_MARKERS if re.search(p, text, re.IGNORECASE))
         score -= opinion_count * 0.05
 
-        # --- Cap & clamp ---
         return max(0.05, min(1.0, score))
 
     @staticmethod
     def _map_category(topics: list[str]) -> str:
-        # Priority order: check high-signal topics first
         priority = ["onion", "funny", "weird", "cybersecurity", "gaming",
                      "technology", "artificial intelligence", "health", "science",
                      "tunisia", "arab_world", "world", "politics", "immigration", "economy",
@@ -434,17 +393,11 @@ class NewsAnalyzer:
                     return mapped
         return "General"
 
-    # ------------------------------------------------------------------
-    # 4. Opinion detection
-    # ------------------------------------------------------------------
     @staticmethod
     def _detect_opinion(text: str) -> bool:
         count = sum(1 for p in OPINION_MARKERS if re.search(p, text.lower()))
         return count >= 3
 
-    # ------------------------------------------------------------------
-    # 5. Political leaning (simple keyword heuristics)
-    # ------------------------------------------------------------------
     @staticmethod
     def _detect_political_leaning(text: str) -> str:
         text_lower = text.lower()

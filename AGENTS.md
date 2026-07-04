@@ -17,7 +17,7 @@ newsapp/
     ├── rss_feed_scraper.py ← RSS feed fetcher + article extractor (trafilatura)
     ├── models.py           ← NewsItem, Article, Post, Cluster, Analysis dataclasses
     ├── analyzer.py         ← NLP: summarisation, topic classification, trust, opinion, leaning
-    ├── clustering.py       ← similarity-based article clustering + scoring
+    ├── clustering.py       ← similarity-based article clustering + scoring (removed — logic in presenter)
     └── presenter.py        ← output formatting (terminal + web JSON)
 ```
 
