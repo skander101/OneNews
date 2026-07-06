@@ -12,11 +12,7 @@ from src.analyzer import NewsAnalyzer
 from src.aggregator import NewsAggregator
 from src.presenter import NewsPresenter
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname).1s %(message)s",
-    stream=sys.stderr,
-)
+logger = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,13 +28,12 @@ def parse_args() -> argparse.Namespace:
 
 def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = False):
     if not skip_extraction:
-        print("═══  Extracting article content  ═══")
+        logger.info("═══  Extracting article content  ═══")
         extractor = ArticleExtractor()
         for i, item in enumerate(items, 1):
-            print(f"  [{i:>2}/{len(items)}] {item.post.title[:60]:<60}  ", end="", flush=True)
             article = extractor.extract(item.post.url)
             if article:
-                print(f"✓  ({article.source_domain})")
+                logger.info("  [%2d/%d] %-60s ✓  (%s)", i, len(items), item.post.title[:60], article.source_domain)
             else:
                 article = Article(
                     url=item.post.url,
@@ -48,33 +43,29 @@ def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = Fal
                     extraction_success=False,
                     image_url=item.post.image_url,
                 )
-                print(f"✗  (title only)")
+                logger.info("  [%2d/%d] %-60s ✗  (title only)", i, len(items), item.post.title[:60])
             item.article = article
     else:
-        print("═══  Extraction skipped (articles already loaded)  ═══")
+        logger.info("═══  Extraction skipped (articles already loaded)  ═══")
 
-    print("\n═══  Analysing articles  ═══")
+    logger.info("═══  Analysing articles  ═══")
     analyzer = NewsAnalyzer(cfg)
     for i, item in enumerate(items, 1):
-        print(f"  [{i:>2}/{len(items)}] analysing ...  ", end="", flush=True)
         item.analysis = analyzer.analyze(item.article)
         cat = item.analysis.category
         topics = ", ".join(item.analysis.topics) if item.analysis.topics else "(none)"
-        print(f"{cat:<14} topic: {topics:<30} trust: {item.analysis.trustworthiness_score:.0%}")
+        logger.info("  [%2d/%d] %-14s topic: %-30s trust: %s", i, len(items), cat, topics, f"{item.analysis.trustworthiness_score:.0%}")
 
-    print("\n═══  Clustering & ranking  ═══")
+    logger.info("═══  Clustering & ranking  ═══")
     aggregator = NewsAggregator(cfg)
     clusters = aggregator.cluster_news(items)
-    print(f"  → {len(clusters)} story clusters found\n")
-
-    print("═══  Results  ═══")
-    presenter = NewsPresenter()
-    presenter.display(clusters)
+    logger.info("  → %d story clusters found", len(clusters))
 
     return clusters
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, format="%(levelname).1s %(message)s", stream=sys.stderr)
     args = parse_args()
     cfg = Config()
 

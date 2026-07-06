@@ -1,14 +1,22 @@
 # Core
-praw>=7.7.0
-trafilatura>=1.6.0
+flask>=3.0.0
+flask-cors>=4.0.0
+gunicorn>=21.2.0
+feedparser>=6.0.0
 requests>=2.28.0
 python-dotenv>=1.0.0
+trafilatura>=1.6.0
+beautifulsoup4>=4.12.0
+apscheduler>=3.10.0
 
-# NLP / GenAI (optional - program falls back to simple algorithms if missing)
-transformers>=4.30.0
-sentence-transformers>=2.2.0
-torch>=2.0.0
-numpy>=1.24.0
+# Reddit (optional — only needed for Reddit source)
+praw>=7.7.0
+
+# NLP / GenAI (optional — program falls back to rule-based if missing)
+# transformers>=4.30.0
+# sentence-transformers>=2.2.0
+# torch>=2.0.0
+# numpy>=1.24.0
 
 # Install with: pip install -r requirements.txt
-# For CPU-only: pip install torch --index-url https://download.pytorch.org/whl/cpu
+# For ML models: pip install transformers sentence-transformers torch numpy
