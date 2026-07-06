@@ -25,7 +25,7 @@ CORS(app, origins=cfg.cors_origins.split(",") if cfg.cors_origins != "*" else "*
 
 cache_lock = threading.Lock()
 
-CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache_data.json")
+CACHE_FILE = os.getenv("CACHE_FILE", "/tmp/cache_data.json")
 
 CATEGORIES = ["Geopolitical", "World Health", "Tech", "Cybersecurity", "Funny/Weird", "Gaming", "Movies", "Arab World", "Tunisia"]
 
@@ -55,6 +55,12 @@ def _cluster_to_html_dict(c):
                 "summary": a.analysis.summary if a.analysis else "",
                 "topics": a.analysis.topics if a.analysis else [],
                 "trust": f"{a.analysis.trustworthiness_score:.0%}" if a.analysis else "",
+                "sponsor": a.analysis.sponsor.get("display", "") if a.analysis else "",
+                "sponsor_info": a.analysis.sponsor if a.analysis else {},
+                "source_bias": a.analysis.source_bias if a.analysis else "",
+                "source_factuality": a.analysis.source_factuality if a.analysis else "",
+                "article_leaning": a.analysis.article_leaning if a.analysis else "",
+                "sourcing_penalty": a.analysis.sourcing_penalty if a.analysis else 0,
                 "score": a.post.score,
                 "comments": a.post.num_comments,
                 "url": a.post.url,
@@ -89,6 +95,12 @@ def _cluster_to_api_dict(c):
                 "summary": a.analysis.summary if a.analysis else "",
                 "topics": a.analysis.topics if a.analysis else [],
                 "trust": round(a.analysis.trustworthiness_score, 2) if a.analysis else 0,
+                "sponsor": a.analysis.sponsor.get("display", "") if a.analysis else "",
+                "sponsor_info": a.analysis.sponsor if a.analysis else {},
+                "source_bias": a.analysis.source_bias if a.analysis else "",
+                "source_factuality": a.analysis.source_factuality if a.analysis else "",
+                "article_leaning": a.analysis.article_leaning if a.analysis else "",
+                "sourcing_penalty": a.analysis.sourcing_penalty if a.analysis else 0,
                 "score": a.post.score,
                 "comments": a.post.num_comments,
                 "image": a.article.image_url if a.article else a.post.image_url,
@@ -222,6 +234,54 @@ def api_categories():
     return jsonify({"categories": CATEGORIES})
 
 
+def _build_sponsors():
+    with cache_lock:
+        results = list(cached_results)
+    groups: dict[str, dict] = {}
+    for cluster in results:
+        for article in cluster.get("articles", []):
+            info = article.get("sponsor_info", {})
+            display = info.get("display", "") or article.get("sponsor", "")
+            if not display:
+                continue
+            if display not in groups:
+                groups[display] = {
+                    "display": display,
+                    "parent": info.get("parent", ""),
+                    "category": info.get("category", ""),
+                    "bias": info.get("bias", ""),
+                    "factuality": info.get("factuality", ""),
+                    "wikipedia": info.get("wikipedia", ""),
+                    "owners": info.get("owners", []),
+                    "sources": set(),
+                }
+            groups[display]["sources"].add(article.get("domain", ""))
+    return sorted(
+        [
+            {
+                "display": g["display"],
+                "parent": g["parent"],
+                "category": g["category"],
+                "bias": g["bias"],
+                "factuality": g["factuality"],
+                "wikipedia": g["wikipedia"],
+                "owners": g["owners"],
+                "sources": sorted(g["sources"]),
+                "source_count": len(g["sources"]),
+            }
+            for g in groups.values()
+        ],
+        key=lambda x: x["display"].lower(),
+    )
+
+
+@app.route("/api/v1/sponsors")
+def api_sponsors():
+    return jsonify({"sponsors": _build_sponsors()})
+
+
+
+
 @app.route("/api/v1/refresh", methods=["POST"])
 def api_refresh():
     threading.Thread(target=refresh_data, daemon=True).start()
@@ -237,7 +297,7 @@ def health():
     return jsonify({"status": "unhealthy", "message": cached_status}), 503
 
 
-# ---- Load cached data on startup (for WSGI) ----
+# ---- Startup (runs in both WSGI and dev modes) ----
 
 _cache_data = _load_cache()
 if _cache_data:
@@ -252,31 +312,29 @@ if _cache_data:
             pass
     logger.info("Loaded cached data: %s", cached_status)
 
-# ---- Scheduled refresh for long-running processes ----
+if not cached_results:
+    threading.Thread(target=refresh_data, daemon=True).start()
 
-def _start_scheduler():
-    try:
-        from apscheduler.schedulers.background import BackgroundScheduler
-        scheduler = BackgroundScheduler(daemon=True)
-        scheduler.add_job(
-            refresh_data,
-            trigger="cron",
-            hour=cfg.refresh_hour,
-            minute=cfg.refresh_minute,
-            timezone=cfg.refresh_timezone,
-            id="daily_refresh",
-            name="Daily news refresh",
-            replace_existing=True,
-        )
-        scheduler.start()
-        logger.info("Scheduler started — daily refresh at %02d:%02d %s", cfg.refresh_hour, cfg.refresh_minute, cfg.refresh_timezone)
-    except ImportError:
-        logger.warning("APScheduler not available — scheduled refresh disabled. Use PythonAnywhere tasks instead.")
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    _scheduler = BackgroundScheduler(daemon=True)
+    _scheduler.add_job(
+        refresh_data,
+        trigger="cron",
+        hour=cfg.refresh_hour,
+        minute=cfg.refresh_minute,
+        timezone=cfg.refresh_timezone,
+        id="daily_refresh",
+        name="Daily news refresh",
+        replace_existing=True,
+    )
+    _scheduler.start()
+    logger.info("Scheduler started — daily refresh at %02d:%02d %s", cfg.refresh_hour, cfg.refresh_minute, cfg.refresh_timezone)
+except ImportError:
+    logger.warning("APScheduler not available — scheduled refresh disabled")
 
 
-# ---- Entry points ----
+# ---- Dev server (not used in WSGI/gunicorn) ----
 
 if __name__ == "__main__":
-    _start_scheduler()
-    threading.Thread(target=refresh_data, daemon=True).start()
     app.run(host=cfg.host, port=cfg.port, debug=(cfg.flask_env != "production"))

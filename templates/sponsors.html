@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sponsors — News Digest</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  background: #000;
+  color: #a0a0a0;
+  min-height: 100vh;
+}
+a { color: #d72924; text-decoration: none; }
+a:hover, a:focus, a:active { color: #df5450; }
+h1, h2, h3, h4, h5, h6 { font-family: Lora, Cambria, sans-serif; color: #fff; }
+.header {
+  background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(215,41,36,0.92) 100%);
+  padding: 20px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: Lora, Cambria, sans-serif;
+  color: #fff;
+}
+.subtitle { font-size: 13px; color: #c0c0c0; }
+.back-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  text-decoration: none;
+  background: #222;
+  color: #c0c0c0;
+  transition: background 0.45s;
+}
+.back-btn:hover { background: #333; color: #fff; }
+.grid { display: grid; gap: 16px; }
+.card {
+  background: rgba(12, 12, 12, 0.92);
+  padding: 20px 24px;
+  border: 1px solid #222;
+  box-shadow: 1px 2px 3px rgba(255,255,255,.1);
+  transition: border-color 0.45s;
+}
+.card:hover { border-color: #d72924; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+.card h2 { font-size: 16px; font-weight: 700; font-family: Lora, Cambria, sans-serif; color: #d72924; }
+.category-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 3px 8px;
+}
+.cat-government { background: rgba(239,68,68,0.15); color: #f87171; }
+.cat-conglomerate { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.cat-private_equity { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.cat-wealthy_private { background: rgba(236,72,153,0.15); color: #f472b6; }
+.cat-corporate { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.cat-independent { background: rgba(34,197,94,0.15); color: #4ade80; }
+.cat-satire { background: rgba(168,85,247,0.15); color: #c084fc; }
+.bias-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  letter-spacing: .03em;
+}
+.bias-left { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.bias-left-center { background: rgba(99,102,241,0.15); color: #818cf8; }
+.bias-center { background: rgba(148,163,184,0.15); color: #94a3b8; }
+.bias-right-center { background: rgba(239,68,68,0.15); color: #f87171; }
+.bias-right { background: rgba(220,38,38,0.15); color: #ef4444; }
+.bias-satire { background: rgba(168,85,247,0.15); color: #c084fc; }
+.factuality-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  letter-spacing: .03em;
+}
+.factuality-high { background: rgba(34,197,94,0.15); color: #4ade80; }
+.factuality-mixed { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.factuality-low { background: rgba(239,68,68,0.15); color: #f87171; }
+.factuality-satire { background: rgba(168,85,247,0.15); color: #c084fc; }
+.card .parent { font-size: 13px; color: #c0c0c0; margin-bottom: 12px; }
+.owners { margin-bottom: 12px; }
+.owners h3 { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.owner-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.owner-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: rgba(215,41,36,0.08);
+  color: #d72924;
+  border: 1px solid rgba(215,41,36,0.2);
+}
+.sources { margin-top: 12px; padding-top: 12px; border-top: 1px solid #333; }
+.sources h3 { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.source-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.source-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: #222;
+  color: #c0c0c0;
+  border: 1px solid #333;
+}
+.empty { text-align: center; padding: 60px 20px; color: #666; }
+.empty h2 { font-size: 18px; margin-bottom: 6px; color: #fff; }
+@media (max-width: 640px) {
+  .header { padding: 14px; }
+  .container { padding: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>🏢 Who Owns the News?</h1>
+      <div class="subtitle">Track the parent companies and shareholders behind each news source</div>
+    </div>
+    <a href="/" class="back-btn">← Back to News</a>
+  </div>
+</div>
+<div class="container">
+  {% if sponsors %}
+  <div class="grid">
+    {% for s in sponsors %}
+    <div class="card">
+      <div class="card-header">
+        <h2>{{ s.display }}</h2>
+         <span class="category-badge cat-{{ s.category }}">
+           {% if s.category == "government" %}🏛️ Government
+           {% elif s.category == "conglomerate" %}🏢 Media Conglomerate
+           {% elif s.category == "private_equity" %}💰 Private Equity
+           {% elif s.category == "wealthy_private" %}👤 Wealthy Private Owner
+           {% elif s.category == "corporate" %}📊 Corporate
+           {% elif s.category == "independent" %}✅ Independent
+           {% else %}{{ s.category }}{% endif %}
+         </span>
+      </div>
+      <div class="parent">Parent: {{ s.parent }}</div>
+      {% if s.bias or s.factuality %}
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        {% if s.bias %}
+        <span class="bias-badge bias-{{ s.bias }}">{{ s.bias }}</span>
+        {% endif %}
+        {% if s.factuality %}
+        <span class="factuality-badge factuality-{{ s.factuality }}">{{ s.factuality }}</span>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% if s.owners %}
+      <div class="owners">
+        <h3>Shareholders / Funders</h3>
+        <div class="owner-list">
+          {% for owner in s.owners %}
+          <span class="owner-tag">{{ owner }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="sources">
+        <h3>{{ s.source_count }} outlet{% if s.source_count != 1 %}s{% endif %} owned</h3>
+        <div class="source-list">
+          {% for domain in s.sources %}
+          <span class="source-tag">{{ domain }}</span>
+          {% endfor %}
+        </div>
+        {% if s.wikipedia %}
+        <a href="{{ s.wikipedia }}" target="_blank" class="btn" style="display:inline-block;margin-top:12px;padding:8px 16px;background:linear-gradient(to right, #d72924 0%, #db3e3a 51%, #d72924 100%);color:#fff;font-size:13px;font-weight:600;font-family:'IBM Plex Serif',Georgia,serif;text-decoration:none;">📖 Wikipedia</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <h2>No sponsor data yet</h2>
+    <p>Run a data refresh to populate ownership information</p>
+  </div>
+  {% endif %}
+</div>
+</body>
+</html>

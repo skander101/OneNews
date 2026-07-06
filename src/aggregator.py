@@ -140,6 +140,10 @@ class NewsAggregator:
             if item.analysis and item.analysis.category != "General":
                 s += 0.05
 
+            # Penalty for sourcing from another outlet's reporting
+            if item.analysis:
+                s -= item.analysis.sourcing_penalty * 0.40
+
             scores.append(max(0.05, min(1.0, s)))
 
         return sum(scores) / max(len(scores), 1)

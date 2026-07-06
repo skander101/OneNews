@@ -20,6 +20,66 @@ UNRELIABLE_DOMAINS = {
     "theonion.com": -0.25, "naturalnews.com": -0.30, "zerohedge.com": -0.15,
 }
 
+SPONSOR_INFO: dict[str, dict] = {
+    # ── Government-funded ──
+    "bbc.com": {"display": "BBC", "parent": "BBC", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["UK Government (licence fee payers)"], "wikipedia": "https://en.wikipedia.org/wiki/BBC"},
+    "bbc.co.uk": {"display": "BBC", "parent": "BBC", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["UK Government (licence fee payers)"], "wikipedia": "https://en.wikipedia.org/wiki/BBC"},
+    "npr.org": {"display": "NPR", "parent": "National Public Radio", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["Corporation for Public Broadcasting", "Member stations"], "wikipedia": "https://en.wikipedia.org/wiki/NPR"},
+    "aljazeera.com": {"display": "Al Jazeera", "parent": "Al Jazeera Media Network", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["Government of Qatar"], "wikipedia": "https://en.wikipedia.org/wiki/Al_Jazeera_Media_Network"},
+    "france24.com": {"display": "France 24", "parent": "France Médias Monde", "category": "government", "bias": "center", "factuality": "high", "owners": ["French Government"], "wikipedia": "https://en.wikipedia.org/wiki/France_24"},
+    "arabnews.com": {"display": "Arab News", "parent": "Saudi Research & Publishing", "category": "government", "bias": "center", "factuality": "high", "owners": ["Saudi Government"], "wikipedia": "https://en.wikipedia.org/wiki/Arab_News"},
+
+    # ── Media Conglomerate ──
+    "wired.com": {"display": "Wired (Condé Nast)", "parent": "Condé Nast", "category": "conglomerate", "bias": "left-center", "factuality": "high", "owners": ["Advance Publications", "Newhouse family"], "wikipedia": "https://en.wikipedia.org/wiki/Cond%C3%A9_Nast"},
+    "arstechnica.com": {"display": "Ars Technica (Condé Nast)", "parent": "Condé Nast", "category": "conglomerate", "bias": "left-center", "factuality": "high", "owners": ["Advance Publications", "Newhouse family"], "wikipedia": "https://en.wikipedia.org/wiki/Cond%C3%A9_Nast"},
+    "wsj.com": {"display": "Wall Street Journal", "parent": "News Corp (Dow Jones)", "category": "conglomerate", "bias": "center", "factuality": "high", "owners": ["Murdoch family", "Public shareholders (NASDAQ: NWSA)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Wall_Street_Journal"},
+    "pcgamer.com": {"display": "PC Gamer (Future)", "parent": "Future plc", "category": "conglomerate", "bias": "center", "factuality": "high", "owners": ["Public shareholders (LSE: FUTR)"], "wikipedia": "https://en.wikipedia.org/wiki/Future_plc"},
+    "ign.com": {"display": "IGN (Ziff Davis)", "parent": "Ziff Davis", "category": "conglomerate", "bias": "center", "factuality": "high", "owners": ["Public shareholders (NASDAQ: ZD)"], "wikipedia": "https://en.wikipedia.org/wiki/Ziff_Davis"},
+
+    # ── Private Equity ──
+    "techcrunch.com": {"display": "TechCrunch", "parent": "Yahoo Inc.", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["Apollo Global Management"], "wikipedia": "https://en.wikipedia.org/wiki/TechCrunch"},
+    "theverge.com": {"display": "The Verge (Vox Media)", "parent": "Vox Media", "category": "private_equity", "bias": "left-center", "factuality": "high", "owners": ["NBCUniversal (Comcast)", "Accel Partners", "General Atlantic"], "wikipedia": "https://en.wikipedia.org/wiki/Vox_Media"},
+    "polygon.com": {"display": "Polygon (Vox Media)", "parent": "Vox Media", "category": "private_equity", "bias": "left-center", "factuality": "high", "owners": ["NBCUniversal (Comcast)", "Accel Partners", "General Atlantic"], "wikipedia": "https://en.wikipedia.org/wiki/Vox_Media"},
+    "kotaku.com": {"display": "Kotaku (G/O Media)", "parent": "G/O Media", "category": "private_equity", "bias": "left-center", "factuality": "high", "owners": ["Great Hill Partners"], "wikipedia": "https://en.wikipedia.org/wiki/G/O_Media"},
+    "gamespot.com": {"display": "GameSpot (Fandom)", "parent": "Fandom Inc.", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["TPG Capital", "Integrated Media Co."], "wikipedia": "https://en.wikipedia.org/wiki/Fandom_(website)"},
+    "screenrant.com": {"display": "Screen Rant (Valnet)", "parent": "Valnet Inc.", "category": "private_equity", "bias": "center", "factuality": "mixed", "owners": ["Valnet Inc."], "wikipedia": "https://en.wikipedia.org/wiki/Valnet"},
+    "nature.com": {"display": "Nature (Springer Nature)", "parent": "Springer Nature", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["Holtzbrinck Publishing Group", "BC Partners"], "wikipedia": "https://en.wikipedia.org/wiki/Springer_Nature"},
+    "eurogamer.net": {"display": "Eurogamer (ReedPop)", "parent": "ReedPop (Gamer Network)", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["RELX Group"], "wikipedia": "https://en.wikipedia.org/wiki/ReedPop"},
+
+    # ── Wealthy Private Owner ──
+    "washingtonpost.com": {"display": "The Washington Post", "parent": "Nash Holdings", "category": "wealthy_private", "bias": "left-center", "factuality": "high", "owners": ["Jeff Bezos"], "wikipedia": "https://en.wikipedia.org/wiki/The_Washington_Post"},
+    "bloomberg.com": {"display": "Bloomberg", "parent": "Bloomberg L.P.", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Michael Bloomberg (88%)", "Merck family (12%)"], "wikipedia": "https://en.wikipedia.org/wiki/Bloomberg_L.P."},
+    "variety.com": {"display": "Variety", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Jay Penske"], "wikipedia": "https://en.wikipedia.org/wiki/Variety_(magazine)"},
+    "hollywoodreporter.com": {"display": "Hollywood Reporter", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Jay Penske"], "wikipedia": "https://en.wikipedia.org/wiki/The_Hollywood_Reporter"},
+    "deadline.com": {"display": "Deadline", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Jay Penske"], "wikipedia": "https://en.wikipedia.org/wiki/Deadline_Hollywood"},
+    "statnews.com": {"display": "STAT News", "parent": "Boston Globe Media", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["John W. Henry"], "wikipedia": "https://en.wikipedia.org/wiki/STAT_News"},
+    "theonion.com": {"display": "The Onion", "parent": "Global Tetrahedron", "category": "wealthy_private", "bias": "satire", "factuality": "satire", "owners": ["Global Tetrahedron LLC"], "wikipedia": "https://en.wikipedia.org/wiki/The_Onion"},
+
+    # ── Corporate ──
+    "nytimes.com": {"display": "The New York Times", "parent": "The New York Times Company", "category": "corporate", "bias": "left-center", "factuality": "high", "owners": ["Ochs-Sulzberger family (controlling)", "Public shareholders (NYSE: NYT)"], "wikipedia": "https://en.wikipedia.org/wiki/The_New_York_Times"},
+    "reuters.com": {"display": "Reuters", "parent": "Thomson Reuters", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["The Woodbridge Company (Thomson family)", "Public shareholders"], "wikipedia": "https://en.wikipedia.org/wiki/Thomson_Reuters"},
+    "ft.com": {"display": "Financial Times", "parent": "Financial Times", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Nikkei Inc."], "wikipedia": "https://en.wikipedia.org/wiki/Financial_Times"},
+    "economist.com": {"display": "The Economist", "parent": "The Economist Group", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Pearson plc (50%)", "The Rothschild family"], "wikipedia": "https://en.wikipedia.org/wiki/The_Economist"},
+    "therecord.media": {"display": "The Record", "parent": "Recorded Future", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Mastercard"], "wikipedia": "https://en.wikipedia.org/wiki/Recorded_Future"},
+
+    # ── Independent ──
+    "theguardian.com": {"display": "The Guardian", "parent": "Guardian Media Group", "category": "independent", "bias": "left-center", "factuality": "high", "owners": ["Scott Trust Limited (no shareholders, protects editorial independence)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Guardian"},
+    "apnews.com": {"display": "Associated Press", "parent": "Associated Press", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Member newspapers (cooperative, non-profit)"], "wikipedia": "https://en.wikipedia.org/wiki/Associated_Press"},
+    "science.org": {"display": "Science (AAAS)", "parent": "American Association for the Advancement of Science", "category": "independent", "bias": "center", "factuality": "high", "owners": ["AAAS membership (non-profit scientific society)"], "wikipedia": "https://en.wikipedia.org/wiki/Science_(journal)"},
+    "krebsonsecurity.com": {"display": "Krebs on Security", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Brian Krebs (independent journalist)"], "wikipedia": "https://en.wikipedia.org/wiki/Krebs_on_Security"},
+    "bleepingcomputer.com": {"display": "BleepingComputer", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Lawrence Abrams (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/BleepingComputer"},
+    "threatpost.com": {"display": "Threatpost", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Independent editorial team"], "wikipedia": ""},
+    "thehackernews.com": {"display": "The Hacker News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Independent editorial team"], "wikipedia": ""},
+    "thedailymash.co.uk": {"display": "Daily Mash", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire", "owners": ["Neil Rafferty (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Daily_Mash"},
+    "babylonbee.com": {"display": "Babylon Bee", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire", "owners": ["Seth Dillon (CEO)"], "wikipedia": "https://en.wikipedia.org/wiki/Babylon_Bee"},
+    "sciencedaily.com": {"display": "ScienceDaily", "parent": "ScienceDaily LLC", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Dan Hogan (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/ScienceDaily"},
+    "middleeasteye.net": {"display": "Middle East Eye", "parent": "Independent", "category": "independent", "bias": "left-center", "factuality": "mixed", "owners": ["Independent (London-based, reader-supported)"], "wikipedia": "https://en.wikipedia.org/wiki/Middle_East_Eye"},
+    "newarab.com": {"display": "The New Arab", "parent": "Fikra Publishing", "category": "independent", "bias": "left-center", "factuality": "mixed", "owners": ["Fikra Publishing Ltd."], "wikipedia": "https://en.wikipedia.org/wiki/The_New_Arab"},
+    "tunisiaonlinenews.com": {"display": "Tunisia Online News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed", "owners": ["Independent editorial team"], "wikipedia": ""},
+    "northafricapost.com": {"display": "North Africa Post", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed", "owners": ["Independent editorial team"], "wikipedia": ""},
+    "africanews.com": {"display": "Africa News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Independent (NGO-funded)"], "wikipedia": "https://en.wikipedia.org/wiki/Africa_News"},
+}
+
 CLICKBAIT_PATTERNS = [
     r"you won'?t believe", r"shocked?", r"gobsmacked",
     r"this is what happens", r"number \d+ will",
@@ -33,10 +93,45 @@ OPINION_MARKERS = [
     r"\bin my view\b", r"\bit seems\b", r"\bi feel\b",
 ]
 
+# Build outlet names from SPONSOR_INFO for sourcing detection
+_OUTLET_NAMES = sorted(
+    set(
+        v["display"].split(" (")[0]  # "Wired (Condé Nast)" → "Wired"
+        for v in SPONSOR_INFO.values()
+    ),
+    key=len, reverse=True,  # longest first to match "The New York Times" before "The"
+)
+SOURCING_PATTERNS = [
+    rf"\baccording to (?:a[n]?\s+)?{re.escape(name)}\b" for name in _OUTLET_NAMES
+] + [
+    rf"\b{re.escape(name)}\s+(?:reported|reports|writes|notes|noted|broke the story)\b" for name in _OUTLET_NAMES
+] + [
+    rf"\bin a\s+(?:recent\s+)?{re.escape(name)}\s+(?:article|story|report|investigation)\b" for name in _OUTLET_NAMES
+]
+
 LEFT_KEYWORDS = ["progressive", "equality", "social justice", "climate crisis",
-                 "marginalized", "systemic", "privilege", "inequality"]
+                 "marginalized", "systemic", "privilege", "inequality",
+                 "lgbt", "lgbtq", "gay", "lesbian", "transgender", "queer",
+                 "civil rights", "voting rights", "reproductive rights",
+                 "abortion", "workers' rights", "unionize", "unionizing",
+                 "woke", "diversity", "inclusion", "equity",
+                 "feminism", "feminist", "misogyny", "patriarchy",
+                 "racism", "racial justice", "police brutality",
+                 "wealth tax", "universal healthcare", "green new deal",
+                 "income inequality", "living wage", "minimum wage",
+                 "decolonize", "antisemitism", "islamophobia",
+                 "environmental justice", "disability rights"]
 RIGHT_KEYWORDS = ["deregulation", "tax cuts", "free market", "traditional",
-                  "sovereignty", "patriot", "heritage", "small government"]
+                  "sovereignty", "patriot", "heritage", "small government",
+                  "law and order", "border security", "illegal immigration",
+                  "religious freedom", "family values", "pro-life",
+                  "second amendment", "gun rights", "school choice",
+                  "fiscal conservative", "limited government",
+                  "meritocracy", "personal responsibility",
+                  "drain the swamp", "deep state", "woke agenda",
+                  "critical race theory", "cancel culture",
+                  "mass deportation", "america first",
+                  "nationalism", "populism", "constitutional conservative"]
 
 TOPIC_MAP: dict[str, list[str]] = {
     "artificial intelligence": [r"\bai\b", r"\bartificial intelligence\b",
@@ -199,12 +294,53 @@ class NewsAnalyzer:
         except Exception as exc:
             logger.warning("Model loading failed: %s — using rule-based", exc)
 
+    @staticmethod
+    def _detect_sponsor(article: Article) -> dict:
+        domain = re.sub(r"^www\.", "", (article.source_domain or ""))
+        info = SPONSOR_INFO.get(domain)
+        if info:
+            return dict(info)
+        return {"display": "", "parent": "", "category": "", "bias": "", "factuality": "", "owners": []}
+
+    def _detect_article_leaning(self, text: str) -> str:
+        text_lower = text.lower()
+        left = sum(1 for k in LEFT_KEYWORDS if k in text_lower)
+        right = sum(1 for k in RIGHT_KEYWORDS if k in text_lower)
+        diff = left - right
+        if diff >= 2:
+            return "left"
+        if diff >= 1:
+            return "left-center"
+        if right - left >= 2:
+            return "right"
+        if right - left >= 1:
+            return "right-center"
+        return "center"
+
+    @staticmethod
+    def _detect_sourced_content(text: str) -> float:
+        if not text:
+            return 0.0
+        count = sum(1 for p in SOURCING_PATTERNS if re.search(p, text, re.IGNORECASE))
+        if count >= 3:
+            return 0.40
+        if count >= 2:
+            return 0.25
+        if count >= 1:
+            return 0.15
+        return 0.0
+
     def analyze(self, article: Article) -> Analysis:
         summary = self._summarise(article)
         topics = self._classify_topics(article, summary)
         trust = self._assess_trustworthiness(article)
         is_opinion = self._detect_opinion(article.text or "")
-        leaning = self._detect_political_leaning(article.text or "")
+        sourcing_penalty = self._detect_sourced_content(article.text or "")
+
+        sponsor = self._detect_sponsor(article)
+        source_bias = sponsor.get("bias", "")
+        source_factuality = sponsor.get("factuality", "")
+        article_leaning = self._detect_article_leaning(article.text or "")
 
         category = self._map_category(topics)
 
@@ -213,8 +349,13 @@ class NewsAnalyzer:
             topics=topics,
             trustworthiness_score=trust,
             is_opinion=is_opinion,
-            political_leaning=leaning,
+            political_leaning=article_leaning,
             category=category,
+            sponsor=sponsor,
+            source_bias=source_bias,
+            source_factuality=source_factuality,
+            article_leaning=article_leaning,
+            sourcing_penalty=sourcing_penalty,
         )
 
     def _summarise(self, article: Article) -> str:
@@ -397,14 +538,3 @@ class NewsAnalyzer:
     def _detect_opinion(text: str) -> bool:
         count = sum(1 for p in OPINION_MARKERS if re.search(p, text.lower()))
         return count >= 3
-
-    @staticmethod
-    def _detect_political_leaning(text: str) -> str:
-        text_lower = text.lower()
-        left = sum(1 for k in LEFT_KEYWORDS if k in text_lower)
-        right = sum(1 for k in RIGHT_KEYWORDS if k in text_lower)
-        if left > right + 1:
-            return "left-leaning"
-        if right > left + 1:
-            return "right-leaning"
-        return "centrist"

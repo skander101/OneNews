@@ -1,3 +1,12 @@
+---
+title: News Digest
+emoji: 📰
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # OneNews
 
 **⚠️ Experimental / Educational project — built to learn how scrapers and AI work from scratch. Not production-ready. Not intended to be.**

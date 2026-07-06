@@ -26,7 +26,7 @@ from src.rss_feed_scraper import RSSFeedScraper
 
 cfg = Config()
 
-CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache_data.json")
+CACHE_FILE = os.getenv("CACHE_FILE", "/tmp/cache_data.json")
 
 CATEGORIES = ["Geopolitical", "World Health", "Tech", "Cybersecurity", "Funny/Weird", "Gaming", "Movies", "Arab World", "Tunisia"]
 
@@ -55,6 +55,9 @@ def serialize_clusters(clusters):
                     "summary": a.analysis.summary if a.analysis else "",
                     "topics": a.analysis.topics if a.analysis else [],
                     "trust": f"{a.analysis.trustworthiness_score:.0%}" if a.analysis else "",
+                    "sponsor": a.analysis.sponsor.get("display", "") if a.analysis else "",
+                    "sponsor_info": a.analysis.sponsor if a.analysis else {},
+                    "sourcing_penalty": a.analysis.sourcing_penalty if a.analysis else 0,
                     "score": a.post.score,
                     "comments": a.post.num_comments,
                     "url": a.post.url,
@@ -84,6 +87,9 @@ def serialize_clusters(clusters):
                     "summary": a.analysis.summary if a.analysis else "",
                     "topics": a.analysis.topics if a.analysis else [],
                     "trust": round(a.analysis.trustworthiness_score, 2) if a.analysis else 0,
+                    "sponsor": a.analysis.sponsor.get("display", "") if a.analysis else "",
+                    "sponsor_info": a.analysis.sponsor if a.analysis else {},
+                    "sourcing_penalty": a.analysis.sourcing_penalty if a.analysis else 0,
                     "score": a.post.score,
                     "comments": a.post.num_comments,
                     "image": a.article.image_url if a.article else a.post.image_url,

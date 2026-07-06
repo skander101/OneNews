@@ -34,6 +34,11 @@ class Analysis:
     is_opinion: bool
     political_leaning: str = "centrist"
     category: str = "General"
+    sponsor: dict = field(default_factory=dict)
+    source_bias: str = ""
+    source_factuality: str = ""
+    article_leaning: str = "centrist"
+    sourcing_penalty: float = 0.0
 
 
 @dataclass
