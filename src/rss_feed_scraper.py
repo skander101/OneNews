@@ -21,10 +21,13 @@ DEFAULT_FEEDS = [
     "https://www.aljazeera.com/xml/rss/all.xml",
     "https://www.theguardian.com/world/rss",
     # World Health
-    "https://feeds.bbci.co.uk/news/health/rss.xml",
-    "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
     "https://www.statnews.com/feed/",
     "https://www.sciencedaily.com/rss/all.xml",
+    "https://www.sciencenews.org/feed",
+    "https://www.medscape.com/cx/rssfeeds/2700.xml",
+    "https://www.nih.gov/news-events/news-releases/rss.xml",
+    "https://news.harvard.edu/gazette/feed/",
+    "https://news.harvard.edu/gazette/section/health-medicine/feed/",
     # Tech
     "https://feeds.bbci.co.uk/news/technology/rss.xml",
     "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",

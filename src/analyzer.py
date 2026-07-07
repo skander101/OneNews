@@ -13,6 +13,8 @@ RELIABLE_DOMAINS = {
     "economist.com": 0.15, "nature.com": 0.20, "science.org": 0.18,
     "sciencedaily.com": 0.14, "theguardian.com": 0.08, "nytimes.com": 0.10,
     "washingtonpost.com": 0.10, "ft.com": 0.14, "bloomberg.com": 0.12,
+    "sciencenews.org": 0.14, "medscape.com": 0.12, "nih.gov": 0.16,
+    "news.harvard.edu": 0.14,
 }
 
 UNRELIABLE_DOMAINS = {
@@ -73,6 +75,10 @@ SPONSOR_INFO: dict[str, dict] = {
     "thedailymash.co.uk": {"display": "Daily Mash", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire", "owners": ["Neil Rafferty (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Daily_Mash"},
     "babylonbee.com": {"display": "Babylon Bee", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire", "owners": ["Seth Dillon (CEO)"], "wikipedia": "https://en.wikipedia.org/wiki/Babylon_Bee"},
     "sciencedaily.com": {"display": "ScienceDaily", "parent": "ScienceDaily LLC", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Dan Hogan (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/ScienceDaily"},
+    "sciencenews.org": {"display": "Science News", "parent": "Society for Science", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Society for Science (non-profit)"], "wikipedia": "https://en.wikipedia.org/wiki/Science_News"},
+    "medscape.com": {"display": "Medscape", "parent": "WebMD Health Corp", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Internet Brands (KKR & Co.)"], "wikipedia": "https://en.wikipedia.org/wiki/Medscape"},
+    "nih.gov": {"display": "National Institutes of Health", "parent": "U.S. Department of Health and Human Services", "category": "government", "bias": "center", "factuality": "high", "owners": ["U.S. Federal Government"], "wikipedia": "https://en.wikipedia.org/wiki/National_Institutes_of_Health"},
+    "news.harvard.edu": {"display": "Harvard Gazette", "parent": "Harvard University", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Harvard University (non-profit educational institution)"], "wikipedia": "https://en.wikipedia.org/wiki/Harvard_Gazette"},
     "middleeasteye.net": {"display": "Middle East Eye", "parent": "Independent", "category": "independent", "bias": "left-center", "factuality": "mixed", "owners": ["Independent (London-based, reader-supported)"], "wikipedia": "https://en.wikipedia.org/wiki/Middle_East_Eye"},
     "newarab.com": {"display": "The New Arab", "parent": "Fikra Publishing", "category": "independent", "bias": "left-center", "factuality": "mixed", "owners": ["Fikra Publishing Ltd."], "wikipedia": "https://en.wikipedia.org/wiki/The_New_Arab"},
     "tunisiaonlinenews.com": {"display": "Tunisia Online News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed", "owners": ["Independent editorial team"], "wikipedia": ""},
@@ -470,6 +476,10 @@ class NewsAnalyzer:
         "deadline.com": "movies",
         "screenrant.com": "movies",
         "tunisiaonlinenews.com": "tunisia",
+        "sciencenews.org": "health",
+        "medscape.com": "health",
+        "nih.gov": "health",
+        "news.harvard.edu": "health",
     }
 
     def _keyword_topic_match(self, article: Article, summary: str) -> list[str]:
