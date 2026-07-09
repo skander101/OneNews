@@ -24,66 +24,333 @@ UNRELIABLE_DOMAINS = {
 
 SPONSOR_INFO: dict[str, dict] = {
     # ── Government-funded ──
-    "bbc.com": {"display": "BBC", "parent": "BBC", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["UK Government (licence fee payers)"], "wikipedia": "https://en.wikipedia.org/wiki/BBC"},
-    "bbc.co.uk": {"display": "BBC", "parent": "BBC", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["UK Government (licence fee payers)"], "wikipedia": "https://en.wikipedia.org/wiki/BBC"},
-    "npr.org": {"display": "NPR", "parent": "National Public Radio", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["Corporation for Public Broadcasting", "Member stations"], "wikipedia": "https://en.wikipedia.org/wiki/NPR"},
-    "aljazeera.com": {"display": "Al Jazeera", "parent": "Al Jazeera Media Network", "category": "government", "bias": "left-center", "factuality": "high", "owners": ["Government of Qatar"], "wikipedia": "https://en.wikipedia.org/wiki/Al_Jazeera_Media_Network"},
-    "france24.com": {"display": "France 24", "parent": "France Médias Monde", "category": "government", "bias": "center", "factuality": "high", "owners": ["French Government"], "wikipedia": "https://en.wikipedia.org/wiki/France_24"},
-    "arabnews.com": {"display": "Arab News", "parent": "Saudi Research & Publishing", "category": "government", "bias": "center", "factuality": "high", "owners": ["Saudi Government"], "wikipedia": "https://en.wikipedia.org/wiki/Arab_News"},
+    "bbc.com": {
+        "display": "BBC", "parent": "BBC", "category": "government", "bias": "left-center", "factuality": "high",
+        "owners": ["UK Government (licence fee payers)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/BBC",
+        "owner_wikis": {"UK Government (licence fee payers)": "https://en.wikipedia.org/wiki/Government_of_the_United_Kingdom"},
+    },
+    "bbc.co.uk": {
+        "display": "BBC", "parent": "BBC", "category": "government", "bias": "left-center", "factuality": "high",
+        "owners": ["UK Government (licence fee payers)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/BBC",
+        "owner_wikis": {"UK Government (licence fee payers)": "https://en.wikipedia.org/wiki/Government_of_the_United_Kingdom"},
+    },
+    "npr.org": {
+        "display": "NPR", "parent": "National Public Radio", "category": "government", "bias": "left-center", "factuality": "high",
+        "owners": ["Corporation for Public Broadcasting", "Member stations"],
+        "wikipedia": "https://en.wikipedia.org/wiki/NPR",
+        "owner_wikis": {"Corporation for Public Broadcasting": "https://en.wikipedia.org/wiki/Corporation_for_Public_Broadcasting"},
+    },
+    "aljazeera.com": {
+        "display": "Al Jazeera", "parent": "Al Jazeera Media Network", "category": "government", "bias": "left-center", "factuality": "high",
+        "owners": ["Government of Qatar"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Al_Jazeera_Media_Network",
+        "owner_wikis": {"Government of Qatar": "https://en.wikipedia.org/wiki/Government_of_Qatar"},
+    },
+    "france24.com": {
+        "display": "France 24", "parent": "France Médias Monde", "category": "government", "bias": "center", "factuality": "high",
+        "owners": ["French Government"],
+        "wikipedia": "https://en.wikipedia.org/wiki/France_24",
+        "owner_wikis": {"French Government": "https://en.wikipedia.org/wiki/Government_of_France"},
+    },
+    "arabnews.com": {
+        "display": "Arab News", "parent": "Saudi Research & Publishing", "category": "government", "bias": "center", "factuality": "high",
+        "owners": ["Saudi Government"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Arab_News",
+        "owner_wikis": {"Saudi Government": "https://en.wikipedia.org/wiki/Government_of_Saudi_Arabia"},
+    },
 
     # ── Media Conglomerate ──
-    "wired.com": {"display": "Wired (Condé Nast)", "parent": "Condé Nast", "category": "conglomerate", "bias": "left-center", "factuality": "high", "owners": ["Advance Publications", "Newhouse family"], "wikipedia": "https://en.wikipedia.org/wiki/Cond%C3%A9_Nast"},
-    "arstechnica.com": {"display": "Ars Technica (Condé Nast)", "parent": "Condé Nast", "category": "conglomerate", "bias": "left-center", "factuality": "high", "owners": ["Advance Publications", "Newhouse family"], "wikipedia": "https://en.wikipedia.org/wiki/Cond%C3%A9_Nast"},
-    "wsj.com": {"display": "Wall Street Journal", "parent": "News Corp (Dow Jones)", "category": "conglomerate", "bias": "center", "factuality": "high", "owners": ["Murdoch family", "Public shareholders (NASDAQ: NWSA)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Wall_Street_Journal"},
-    "pcgamer.com": {"display": "PC Gamer (Future)", "parent": "Future plc", "category": "conglomerate", "bias": "center", "factuality": "high", "owners": ["Public shareholders (LSE: FUTR)"], "wikipedia": "https://en.wikipedia.org/wiki/Future_plc"},
-    "ign.com": {"display": "IGN (Ziff Davis)", "parent": "Ziff Davis", "category": "conglomerate", "bias": "center", "factuality": "high", "owners": ["Public shareholders (NASDAQ: ZD)"], "wikipedia": "https://en.wikipedia.org/wiki/Ziff_Davis"},
+    "wired.com": {
+        "display": "Wired (Condé Nast)", "parent": "Condé Nast", "category": "conglomerate", "bias": "left-center", "factuality": "high",
+        "owners": ["Advance Publications", "Newhouse family"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Cond%C3%A9_Nast",
+        "owner_wikis": {"Advance Publications": "https://en.wikipedia.org/wiki/Advance_Publications", "Newhouse family": "https://en.wikipedia.org/wiki/Newhouse_family"},
+    },
+    "arstechnica.com": {
+        "display": "Ars Technica (Condé Nast)", "parent": "Condé Nast", "category": "conglomerate", "bias": "left-center", "factuality": "high",
+        "owners": ["Advance Publications", "Newhouse family"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Cond%C3%A9_Nast",
+        "owner_wikis": {"Advance Publications": "https://en.wikipedia.org/wiki/Advance_Publications", "Newhouse family": "https://en.wikipedia.org/wiki/Newhouse_family"},
+    },
+    "wsj.com": {
+        "display": "Wall Street Journal", "parent": "News Corp (Dow Jones)", "category": "conglomerate", "bias": "center", "factuality": "high",
+        "owners": ["Murdoch family", "Public shareholders (NASDAQ: NWSA)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Wall_Street_Journal",
+        "owner_wikis": {"Murdoch family": "https://en.wikipedia.org/wiki/Murdoch_family"},
+    },
+    "pcgamer.com": {
+        "display": "PC Gamer (Future)", "parent": "Future plc", "category": "conglomerate", "bias": "center", "factuality": "high",
+        "owners": ["Public shareholders (LSE: FUTR)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Future_plc",
+        "owner_wikis": {},
+    },
+    "ign.com": {
+        "display": "IGN (Ziff Davis)", "parent": "Ziff Davis", "category": "conglomerate", "bias": "center", "factuality": "high",
+        "owners": ["Public shareholders (NASDAQ: ZD)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Ziff_Davis",
+        "owner_wikis": {},
+    },
 
     # ── Private Equity ──
-    "techcrunch.com": {"display": "TechCrunch", "parent": "Yahoo Inc.", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["Apollo Global Management"], "wikipedia": "https://en.wikipedia.org/wiki/TechCrunch"},
-    "theverge.com": {"display": "The Verge (Vox Media)", "parent": "Vox Media", "category": "private_equity", "bias": "left-center", "factuality": "high", "owners": ["NBCUniversal (Comcast)", "Accel Partners", "General Atlantic"], "wikipedia": "https://en.wikipedia.org/wiki/Vox_Media"},
-    "polygon.com": {"display": "Polygon (Vox Media)", "parent": "Vox Media", "category": "private_equity", "bias": "left-center", "factuality": "high", "owners": ["NBCUniversal (Comcast)", "Accel Partners", "General Atlantic"], "wikipedia": "https://en.wikipedia.org/wiki/Vox_Media"},
-    "kotaku.com": {"display": "Kotaku (G/O Media)", "parent": "G/O Media", "category": "private_equity", "bias": "left-center", "factuality": "high", "owners": ["Great Hill Partners"], "wikipedia": "https://en.wikipedia.org/wiki/G/O_Media"},
-    "gamespot.com": {"display": "GameSpot (Fandom)", "parent": "Fandom Inc.", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["TPG Capital", "Integrated Media Co."], "wikipedia": "https://en.wikipedia.org/wiki/Fandom_(website)"},
-    "screenrant.com": {"display": "Screen Rant (Valnet)", "parent": "Valnet Inc.", "category": "private_equity", "bias": "center", "factuality": "mixed", "owners": ["Valnet Inc."], "wikipedia": "https://en.wikipedia.org/wiki/Valnet"},
-    "nature.com": {"display": "Nature (Springer Nature)", "parent": "Springer Nature", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["Holtzbrinck Publishing Group", "BC Partners"], "wikipedia": "https://en.wikipedia.org/wiki/Springer_Nature"},
-    "eurogamer.net": {"display": "Eurogamer (ReedPop)", "parent": "ReedPop (Gamer Network)", "category": "private_equity", "bias": "center", "factuality": "high", "owners": ["RELX Group"], "wikipedia": "https://en.wikipedia.org/wiki/ReedPop"},
+    "techcrunch.com": {
+        "display": "TechCrunch", "parent": "Yahoo Inc.", "category": "private_equity", "bias": "center", "factuality": "high",
+        "owners": ["Apollo Global Management"],
+        "wikipedia": "https://en.wikipedia.org/wiki/TechCrunch",
+        "owner_wikis": {"Apollo Global Management": "https://en.wikipedia.org/wiki/Apollo_Global_Management"},
+    },
+    "theverge.com": {
+        "display": "The Verge (Vox Media)", "parent": "Vox Media", "category": "private_equity", "bias": "left-center", "factuality": "high",
+        "owners": ["NBCUniversal (Comcast)", "Accel Partners", "General Atlantic"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Vox_Media",
+        "owner_wikis": {
+            "NBCUniversal (Comcast)": "https://en.wikipedia.org/wiki/NBCUniversal",
+            "Accel Partners": "https://en.wikipedia.org/wiki/Accel",
+            "General Atlantic": "https://en.wikipedia.org/wiki/General_Atlantic",
+        },
+    },
+    "polygon.com": {
+        "display": "Polygon (Vox Media)", "parent": "Vox Media", "category": "private_equity", "bias": "left-center", "factuality": "high",
+        "owners": ["NBCUniversal (Comcast)", "Accel Partners", "General Atlantic"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Vox_Media",
+        "owner_wikis": {
+            "NBCUniversal (Comcast)": "https://en.wikipedia.org/wiki/NBCUniversal",
+            "Accel Partners": "https://en.wikipedia.org/wiki/Accel",
+            "General Atlantic": "https://en.wikipedia.org/wiki/General_Atlantic",
+        },
+    },
+    "kotaku.com": {
+        "display": "Kotaku (G/O Media)", "parent": "G/O Media", "category": "private_equity", "bias": "left-center", "factuality": "high",
+        "owners": ["Great Hill Partners"],
+        "wikipedia": "https://en.wikipedia.org/wiki/G/O_Media",
+        "owner_wikis": {"Great Hill Partners": "https://en.wikipedia.org/wiki/Great_Hill_Partners"},
+    },
+    "gamespot.com": {
+        "display": "GameSpot (Fandom)", "parent": "Fandom Inc.", "category": "private_equity", "bias": "center", "factuality": "high",
+        "owners": ["TPG Capital", "Integrated Media Co."],
+        "wikipedia": "https://en.wikipedia.org/wiki/Fandom_(website)",
+        "owner_wikis": {"TPG Capital": "https://en.wikipedia.org/wiki/TPG_Inc."},
+    },
+    "screenrant.com": {
+        "display": "Screen Rant (Valnet)", "parent": "Valnet Inc.", "category": "private_equity", "bias": "center", "factuality": "mixed",
+        "owners": ["Valnet Inc."],
+        "wikipedia": "https://en.wikipedia.org/wiki/Valnet",
+        "owner_wikis": {},
+    },
+    "nature.com": {
+        "display": "Nature (Springer Nature)", "parent": "Springer Nature", "category": "private_equity", "bias": "center", "factuality": "high",
+        "owners": ["Holtzbrinck Publishing Group", "BC Partners"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Springer_Nature",
+        "owner_wikis": {
+            "Holtzbrinck Publishing Group": "https://en.wikipedia.org/wiki/Holtzbrinck_Publishing_Group",
+            "BC Partners": "https://en.wikipedia.org/wiki/BC_Partners",
+        },
+    },
+    "eurogamer.net": {
+        "display": "Eurogamer (ReedPop)", "parent": "ReedPop (Gamer Network)", "category": "private_equity", "bias": "center", "factuality": "high",
+        "owners": ["RELX Group"],
+        "wikipedia": "https://en.wikipedia.org/wiki/ReedPop",
+        "owner_wikis": {"RELX Group": "https://en.wikipedia.org/wiki/RELX"},
+    },
 
     # ── Wealthy Private Owner ──
-    "washingtonpost.com": {"display": "The Washington Post", "parent": "Nash Holdings", "category": "wealthy_private", "bias": "left-center", "factuality": "high", "owners": ["Jeff Bezos"], "wikipedia": "https://en.wikipedia.org/wiki/The_Washington_Post"},
-    "bloomberg.com": {"display": "Bloomberg", "parent": "Bloomberg L.P.", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Michael Bloomberg (88%)", "Merck family (12%)"], "wikipedia": "https://en.wikipedia.org/wiki/Bloomberg_L.P."},
-    "variety.com": {"display": "Variety", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Jay Penske"], "wikipedia": "https://en.wikipedia.org/wiki/Variety_(magazine)"},
-    "hollywoodreporter.com": {"display": "Hollywood Reporter", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Jay Penske"], "wikipedia": "https://en.wikipedia.org/wiki/The_Hollywood_Reporter"},
-    "deadline.com": {"display": "Deadline", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["Jay Penske"], "wikipedia": "https://en.wikipedia.org/wiki/Deadline_Hollywood"},
-    "statnews.com": {"display": "STAT News", "parent": "Boston Globe Media", "category": "wealthy_private", "bias": "center", "factuality": "high", "owners": ["John W. Henry"], "wikipedia": "https://en.wikipedia.org/wiki/STAT_News"},
-    "theonion.com": {"display": "The Onion", "parent": "Global Tetrahedron", "category": "wealthy_private", "bias": "satire", "factuality": "satire", "owners": ["Global Tetrahedron LLC"], "wikipedia": "https://en.wikipedia.org/wiki/The_Onion"},
+    "washingtonpost.com": {
+        "display": "The Washington Post", "parent": "Nash Holdings", "category": "wealthy_private", "bias": "left-center", "factuality": "high",
+        "owners": ["Jeff Bezos"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Washington_Post",
+        "owner_wikis": {"Jeff Bezos": "https://en.wikipedia.org/wiki/Jeff_Bezos"},
+    },
+    "bloomberg.com": {
+        "display": "Bloomberg", "parent": "Bloomberg L.P.", "category": "wealthy_private", "bias": "center", "factuality": "high",
+        "owners": ["Michael Bloomberg (88%)", "Merck family (12%)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Bloomberg_L.P.",
+        "owner_wikis": {
+            "Michael Bloomberg (88%)": "https://en.wikipedia.org/wiki/Michael_Bloomberg",
+            "Merck family (12%)": "https://en.wikipedia.org/wiki/Merck_family",
+        },
+    },
+    "variety.com": {
+        "display": "Variety", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high",
+        "owners": ["Jay Penske"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Variety_(magazine)",
+        "owner_wikis": {"Jay Penske": "https://en.wikipedia.org/wiki/Jay_Penske"},
+    },
+    "hollywoodreporter.com": {
+        "display": "Hollywood Reporter", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high",
+        "owners": ["Jay Penske"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Hollywood_Reporter",
+        "owner_wikis": {"Jay Penske": "https://en.wikipedia.org/wiki/Jay_Penske"},
+    },
+    "deadline.com": {
+        "display": "Deadline", "parent": "Penske Media Corporation", "category": "wealthy_private", "bias": "center", "factuality": "high",
+        "owners": ["Jay Penske"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Deadline_Hollywood",
+        "owner_wikis": {"Jay Penske": "https://en.wikipedia.org/wiki/Jay_Penske"},
+    },
+    "statnews.com": {
+        "display": "STAT News", "parent": "Boston Globe Media", "category": "wealthy_private", "bias": "center", "factuality": "high",
+        "owners": ["John W. Henry"],
+        "wikipedia": "https://en.wikipedia.org/wiki/STAT_News",
+        "owner_wikis": {"John W. Henry": "https://en.wikipedia.org/wiki/John_W._Henry"},
+    },
+    "theonion.com": {
+        "display": "The Onion", "parent": "Global Tetrahedron", "category": "wealthy_private", "bias": "satire", "factuality": "satire",
+        "owners": ["Global Tetrahedron LLC"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Onion",
+        "owner_wikis": {},
+    },
 
     # ── Corporate ──
-    "nytimes.com": {"display": "The New York Times", "parent": "The New York Times Company", "category": "corporate", "bias": "left-center", "factuality": "high", "owners": ["Ochs-Sulzberger family (controlling)", "Public shareholders (NYSE: NYT)"], "wikipedia": "https://en.wikipedia.org/wiki/The_New_York_Times"},
-    "reuters.com": {"display": "Reuters", "parent": "Thomson Reuters", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["The Woodbridge Company (Thomson family)", "Public shareholders"], "wikipedia": "https://en.wikipedia.org/wiki/Thomson_Reuters"},
-    "ft.com": {"display": "Financial Times", "parent": "Financial Times", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Nikkei Inc."], "wikipedia": "https://en.wikipedia.org/wiki/Financial_Times"},
-    "economist.com": {"display": "The Economist", "parent": "The Economist Group", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Pearson plc (50%)", "The Rothschild family"], "wikipedia": "https://en.wikipedia.org/wiki/The_Economist"},
-    "therecord.media": {"display": "The Record", "parent": "Recorded Future", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Mastercard"], "wikipedia": "https://en.wikipedia.org/wiki/Recorded_Future"},
+    "nytimes.com": {
+        "display": "The New York Times", "parent": "The New York Times Company", "category": "corporate", "bias": "left-center", "factuality": "high",
+        "owners": ["Ochs-Sulzberger family (controlling)", "Public shareholders (NYSE: NYT)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_New_York_Times",
+        "owner_wikis": {"Ochs-Sulzberger family (controlling)": "https://en.wikipedia.org/wiki/Ochs-Sulzberger_family"},
+    },
+    "reuters.com": {
+        "display": "Reuters", "parent": "Thomson Reuters", "category": "corporate", "bias": "center", "factuality": "high",
+        "owners": ["The Woodbridge Company (Thomson family)", "Public shareholders"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Thomson_Reuters",
+        "owner_wikis": {"The Woodbridge Company (Thomson family)": "https://en.wikipedia.org/wiki/Woodbridge_Company"},
+    },
+    "ft.com": {
+        "display": "Financial Times", "parent": "Financial Times", "category": "corporate", "bias": "center", "factuality": "high",
+        "owners": ["Nikkei Inc."],
+        "wikipedia": "https://en.wikipedia.org/wiki/Financial_Times",
+        "owner_wikis": {"Nikkei Inc.": "https://en.wikipedia.org/wiki/Nikkei,_Inc."},
+    },
+    "economist.com": {
+        "display": "The Economist", "parent": "The Economist Group", "category": "corporate", "bias": "center", "factuality": "high",
+        "owners": ["Pearson plc (50%)", "The Rothschild family"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Economist",
+        "owner_wikis": {
+            "Pearson plc (50%)": "https://en.wikipedia.org/wiki/Pearson_plc",
+            "The Rothschild family": "https://en.wikipedia.org/wiki/Rothschild_family",
+        },
+    },
+    "therecord.media": {
+        "display": "The Record", "parent": "Recorded Future", "category": "corporate", "bias": "center", "factuality": "high",
+        "owners": ["Mastercard"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Recorded_Future",
+        "owner_wikis": {"Mastercard": "https://en.wikipedia.org/wiki/Mastercard"},
+    },
 
     # ── Independent ──
-    "theguardian.com": {"display": "The Guardian", "parent": "Guardian Media Group", "category": "independent", "bias": "left-center", "factuality": "high", "owners": ["Scott Trust Limited (no shareholders, protects editorial independence)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Guardian"},
-    "apnews.com": {"display": "Associated Press", "parent": "Associated Press", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Member newspapers (cooperative, non-profit)"], "wikipedia": "https://en.wikipedia.org/wiki/Associated_Press"},
-    "science.org": {"display": "Science (AAAS)", "parent": "American Association for the Advancement of Science", "category": "independent", "bias": "center", "factuality": "high", "owners": ["AAAS membership (non-profit scientific society)"], "wikipedia": "https://en.wikipedia.org/wiki/Science_(journal)"},
-    "krebsonsecurity.com": {"display": "Krebs on Security", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Brian Krebs (independent journalist)"], "wikipedia": "https://en.wikipedia.org/wiki/Krebs_on_Security"},
-    "bleepingcomputer.com": {"display": "BleepingComputer", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Lawrence Abrams (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/BleepingComputer"},
-    "threatpost.com": {"display": "Threatpost", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Independent editorial team"], "wikipedia": ""},
-    "thehackernews.com": {"display": "The Hacker News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Independent editorial team"], "wikipedia": ""},
-    "thedailymash.co.uk": {"display": "Daily Mash", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire", "owners": ["Neil Rafferty (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/The_Daily_Mash"},
-    "babylonbee.com": {"display": "Babylon Bee", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire", "owners": ["Seth Dillon (CEO)"], "wikipedia": "https://en.wikipedia.org/wiki/Babylon_Bee"},
-    "sciencedaily.com": {"display": "ScienceDaily", "parent": "ScienceDaily LLC", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Dan Hogan (founder)"], "wikipedia": "https://en.wikipedia.org/wiki/ScienceDaily"},
-    "sciencenews.org": {"display": "Science News", "parent": "Society for Science", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Society for Science (non-profit)"], "wikipedia": "https://en.wikipedia.org/wiki/Science_News"},
-    "medscape.com": {"display": "Medscape", "parent": "WebMD Health Corp", "category": "corporate", "bias": "center", "factuality": "high", "owners": ["Internet Brands (KKR & Co.)"], "wikipedia": "https://en.wikipedia.org/wiki/Medscape"},
-    "nih.gov": {"display": "National Institutes of Health", "parent": "U.S. Department of Health and Human Services", "category": "government", "bias": "center", "factuality": "high", "owners": ["U.S. Federal Government"], "wikipedia": "https://en.wikipedia.org/wiki/National_Institutes_of_Health"},
-    "news.harvard.edu": {"display": "Harvard Gazette", "parent": "Harvard University", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Harvard University (non-profit educational institution)"], "wikipedia": "https://en.wikipedia.org/wiki/Harvard_Gazette"},
-    "middleeasteye.net": {"display": "Middle East Eye", "parent": "Independent", "category": "independent", "bias": "left-center", "factuality": "mixed", "owners": ["Independent (London-based, reader-supported)"], "wikipedia": "https://en.wikipedia.org/wiki/Middle_East_Eye"},
-    "newarab.com": {"display": "The New Arab", "parent": "Fikra Publishing", "category": "independent", "bias": "left-center", "factuality": "mixed", "owners": ["Fikra Publishing Ltd."], "wikipedia": "https://en.wikipedia.org/wiki/The_New_Arab"},
-    "tunisiaonlinenews.com": {"display": "Tunisia Online News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed", "owners": ["Independent editorial team"], "wikipedia": ""},
-    "northafricapost.com": {"display": "North Africa Post", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed", "owners": ["Independent editorial team"], "wikipedia": ""},
-    "africanews.com": {"display": "Africa News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high", "owners": ["Independent (NGO-funded)"], "wikipedia": "https://en.wikipedia.org/wiki/Africa_News"},
+    "theguardian.com": {
+        "display": "The Guardian", "parent": "Guardian Media Group", "category": "independent", "bias": "left-center", "factuality": "high",
+        "owners": ["Scott Trust Limited (no shareholders, protects editorial independence)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Guardian",
+        "owner_wikis": {"Scott Trust Limited (no shareholders, protects editorial independence)": "https://en.wikipedia.org/wiki/Scott_Trust_Limited"},
+    },
+    "apnews.com": {
+        "display": "Associated Press", "parent": "Associated Press", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Member newspapers (cooperative, non-profit)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Associated_Press",
+        "owner_wikis": {},
+    },
+    "science.org": {
+        "display": "Science (AAAS)", "parent": "American Association for the Advancement of Science", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["AAAS membership (non-profit scientific society)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Science_(journal)",
+        "owner_wikis": {},
+    },
+    "krebsonsecurity.com": {
+        "display": "Krebs on Security", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Brian Krebs (independent journalist)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Krebs_on_Security",
+        "owner_wikis": {"Brian Krebs (independent journalist)": "https://en.wikipedia.org/wiki/Brian_Krebs"},
+    },
+    "bleepingcomputer.com": {
+        "display": "BleepingComputer", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Lawrence Abrams (founder)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/BleepingComputer",
+        "owner_wikis": {},
+    },
+    "threatpost.com": {
+        "display": "Threatpost", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Independent editorial team"],
+        "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "thehackernews.com": {
+        "display": "The Hacker News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Independent editorial team"],
+        "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "thedailymash.co.uk": {
+        "display": "Daily Mash", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire",
+        "owners": ["Neil Rafferty (founder)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_Daily_Mash",
+        "owner_wikis": {},
+    },
+    "babylonbee.com": {
+        "display": "Babylon Bee", "parent": "Independent", "category": "independent", "bias": "satire", "factuality": "satire",
+        "owners": ["Seth Dillon (CEO)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Babylon_Bee",
+        "owner_wikis": {},
+    },
+    "sciencedaily.com": {
+        "display": "ScienceDaily", "parent": "ScienceDaily LLC", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Dan Hogan (founder)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/ScienceDaily",
+        "owner_wikis": {},
+    },
+    "sciencenews.org": {
+        "display": "Science News", "parent": "Society for Science", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Society for Science (non-profit)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Science_News",
+        "owner_wikis": {"Society for Science (non-profit)": "https://en.wikipedia.org/wiki/Society_for_Science"},
+    },
+    "medscape.com": {
+        "display": "Medscape", "parent": "WebMD Health Corp", "category": "corporate", "bias": "center", "factuality": "high",
+        "owners": ["Internet Brands (KKR & Co.)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Medscape",
+        "owner_wikis": {"Internet Brands (KKR & Co.)": "https://en.wikipedia.org/wiki/Internet_Brands"},
+    },
+    "nih.gov": {
+        "display": "National Institutes of Health", "parent": "U.S. Department of Health and Human Services", "category": "government", "bias": "center", "factuality": "high",
+        "owners": ["U.S. Federal Government"],
+        "wikipedia": "https://en.wikipedia.org/wiki/National_Institutes_of_Health",
+        "owner_wikis": {"U.S. Federal Government": "https://en.wikipedia.org/wiki/Federal_Government_of_the_United_States"},
+    },
+    "news.harvard.edu": {
+        "display": "Harvard Gazette", "parent": "Harvard University", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Harvard University (non-profit educational institution)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Harvard_Gazette",
+        "owner_wikis": {"Harvard University (non-profit educational institution)": "https://en.wikipedia.org/wiki/Harvard_University"},
+    },
+    "middleeasteye.net": {
+        "display": "Middle East Eye", "parent": "Independent", "category": "independent", "bias": "left-center", "factuality": "mixed",
+        "owners": ["Independent (London-based, reader-supported)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Middle_East_Eye",
+        "owner_wikis": {},
+    },
+    "newarab.com": {
+        "display": "The New Arab", "parent": "Fikra Publishing", "category": "independent", "bias": "left-center", "factuality": "mixed",
+        "owners": ["Fikra Publishing Ltd."],
+        "wikipedia": "https://en.wikipedia.org/wiki/The_New_Arab",
+        "owner_wikis": {},
+    },
+    "tunisiaonlinenews.com": {
+        "display": "Tunisia Online News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed",
+        "owners": ["Independent editorial team"],
+        "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "northafricapost.com": {
+        "display": "North Africa Post", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed",
+        "owners": ["Independent editorial team"],
+        "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "africanews.com": {
+        "display": "Africa News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["Independent (NGO-funded)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Africa_News",
+        "owner_wikis": {},
+    },
 }
 
 CLICKBAIT_PATTERNS = [
@@ -306,7 +573,7 @@ class NewsAnalyzer:
         info = SPONSOR_INFO.get(domain)
         if info:
             return dict(info)
-        return {"display": "", "parent": "", "category": "", "bias": "", "factuality": "", "owners": []}
+        return {"display": "", "parent": "", "category": "", "bias": "", "factuality": "", "owners": [], "owner_wikis": {}}
 
     def _detect_article_leaning(self, text: str) -> str:
         text_lower = text.lower()

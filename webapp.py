@@ -253,6 +253,7 @@ def _build_sponsors():
                     "factuality": info.get("factuality", ""),
                     "wikipedia": info.get("wikipedia", ""),
                     "owners": info.get("owners", []),
+                    "owner_wikis": info.get("owner_wikis", {}),
                     "sources": set(),
                 }
             groups[display]["sources"].add(article.get("domain", ""))
@@ -266,6 +267,7 @@ def _build_sponsors():
                 "factuality": g["factuality"],
                 "wikipedia": g["wikipedia"],
                 "owners": g["owners"],
+                "owner_wikis": g["owner_wikis"],
                 "sources": sorted(g["sources"]),
                 "source_count": len(g["sources"]),
             }
