@@ -24,7 +24,7 @@ function groupByDate(clusters) {
   })
   return sorted.map(([date, items]) => ({
     date,
-    items: items.sort((a, b) => (b.score || 0) - (a.score || 0)),
+    items: items.sort((a, b) => (b.final_score || 0) - (a.final_score || 0)),
   }))
 }
 
@@ -270,7 +270,7 @@ export default function App() {
                                 </div>
                                 <div className="card-meta">
                                   <span className="source">{a.domain}</span>
-                                  <span>{'\u{1F6E1}\uFE0F'} {c.trust}</span>
+                                  <span>{'\u{1F6E1}\uFE0F'} {c.avg_trustworthiness != null ? (c.avg_trustworthiness * 100).toFixed(0) + '%' : ''}</span>
                                   {a.article_leaning && (
                                     <span className={'bias-badge bias-' + a.article_leaning}>{a.article_leaning}</span>
                                   )}
@@ -280,13 +280,13 @@ export default function App() {
                                   {a.source_factuality && (
                                     <span className={'factuality-badge factuality-' + a.source_factuality}>{a.source_factuality}</span>
                                   )}
-                                  {c.coverage > 1 && <span>{'\u{1F4F0}'} {c.coverage}</span>}
+                                  {c.total_coverage > 1 && <span>{'\u{1F4F0}'} {c.total_coverage}</span>}
                                   {a.sponsor && <span className="sponsor">{'\u{1F3E2}'} {a.sponsor}</span>}
                                 </div>
-                                <ScoreBar score={c.score} />
+                                <ScoreBar score={c.final_score} />
                                 <div className="score-label">
                                   <span>Relevance</span>
-                                  <span>{c.score}</span>
+                                  <span>{c.final_score}</span>
                                 </div>
                                 <div className="card-actions">
                                   <button className="btn btn-primary" onClick={() => setSponsorInfo(a.sponsor_info)}>
