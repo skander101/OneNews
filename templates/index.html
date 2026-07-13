@@ -414,11 +414,11 @@ h1, h2, h3, h4, h5, h6 { font-family: Lora, Cambria, sans-serif; color: #fff; }
          <div class="grid">
          {% for c in group['items'] %}
          <div class="card">
-            {% if c.image_url %}
-            <div class="card-image-wrap"><img class="card-image" src="{{ c.image_url }}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
-            {% else %}
-            <div class="card-image-placeholder">📰</div>
-            {% endif %}
+             {% if c.image_url %}
+             <div class="card-image-wrap"><img class="card-image" src="{{ c.image_url }}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=card-image-placeholder>📰</div>'"></div>
+             {% else %}
+             <div class="card-image-placeholder">📰</div>
+             {% endif %}
            <div class="card-body">
              <div class="card-rank">#{{ loop.index }}</div>
              <div class="card-topic">{{ c.topic }}</div>
