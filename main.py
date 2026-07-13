@@ -21,8 +21,8 @@ def _translate_text(text: str, target: str = "en") -> str:
     if not text or len(text.strip()) < 3:
         return text
     try:
-        from deep_translator import GoogleTranslator
-        return GoogleTranslator(source="auto", target=target).translate(text)
+        from googletrans import Translator
+        return Translator().translate(text[:2000], dest=target).text[:len(text)]
     except Exception:
         return text
 
