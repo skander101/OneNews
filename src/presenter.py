@@ -36,7 +36,7 @@ class NewsPresenter:
                       f"Score: {cluster.final_score:.2f}  "
                       f"Trust: {cluster.avg_trustworthiness:.0%}")
                 item = cluster.articles[0]
-                title = item.post.title[:72] + "…" if len(item.post.title) > 72 else item.post.title
+                title = item.article.title[:72] + "…" if item.article.title and len(item.article.title) > 72 else (item.article.title or item.post.title)
                 print(f"       {title}")
                 if item.post.published:
                     print(f"       📅 {item.post.published}")

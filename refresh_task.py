@@ -50,8 +50,7 @@ def serialize_clusters(clusters):
             "top_post_url": c.top_post_url,
             "articles": [
                 {
-                    "title": a.post.title,
-                    "domain": a.article.source_domain if a.article else "",
+                    "title": a.article.title or a.post.title,
                     "summary": a.analysis.summary if a.analysis else "",
                     "topics": a.analysis.topics if a.analysis else [],
                     "trust": f"{a.analysis.trustworthiness_score:.0%}" if a.analysis else "",
@@ -81,7 +80,7 @@ def serialize_clusters(clusters):
             "top_post_url": c.top_post_url,
             "articles": [
                 {
-                    "title": a.post.title,
+                    "title": a.article.title or a.post.title,
                     "url": a.post.url,
                     "domain": a.article.source_domain if a.article else "",
                     "summary": a.analysis.summary if a.analysis else "",

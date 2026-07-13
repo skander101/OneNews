@@ -50,11 +50,12 @@ def _cluster_to_html_dict(c):
         "top_post_url": c.top_post_url,
         "articles": [
             {
-                "title": a.post.title,
+                "title": a.article.title or a.post.title,
+                "url": a.post.url,
                 "domain": a.article.source_domain if a.article else "",
                 "summary": a.analysis.summary if a.analysis else "",
                 "topics": a.analysis.topics if a.analysis else [],
-                "trust": f"{a.analysis.trustworthiness_score:.0%}" if a.analysis else "",
+                "trust": round(a.analysis.trustworthiness_score, 2) if a.analysis else 0,
                 "sponsor": a.analysis.sponsor.get("display", "") if a.analysis else "",
                 "sponsor_info": a.analysis.sponsor if a.analysis else {},
                 "source_bias": a.analysis.source_bias if a.analysis else "",
@@ -63,7 +64,6 @@ def _cluster_to_html_dict(c):
                 "sourcing_penalty": a.analysis.sourcing_penalty if a.analysis else 0,
                 "score": a.post.score,
                 "comments": a.post.num_comments,
-                "url": a.post.url,
                 "image": a.article.image_url if a.article else a.post.image_url,
                 "published": a.post.published,
                 "published_iso": a.post.published_iso,
@@ -89,7 +89,7 @@ def _cluster_to_api_dict(c):
         "top_post_url": c.top_post_url,
         "articles": [
             {
-                "title": a.post.title,
+                "title": a.article.title or a.post.title,
                 "url": a.post.url,
                 "domain": a.article.source_domain if a.article else "",
                 "summary": a.analysis.summary if a.analysis else "",

@@ -50,14 +50,14 @@ class NewsAggregator:
             if not item.analysis or not item.article:
                 continue
 
-            text = f"{item.post.title} {item.analysis.summary}"
+            text = f"{item.article.title or item.post.title} {item.analysis.summary}"
             placed = False
 
             for cluster in clusters:
                 rep = cluster[0]
                 if not rep.analysis:
                     continue
-                rep_text = f"{rep.post.title} {rep.analysis.summary}"
+                rep_text = f"{rep.article.title or rep.post.title} {rep.analysis.summary}"
                 if self.compute_similarity(text, rep_text) >= self.config.similarity_threshold:
                     cluster.append(item)
                     placed = True
@@ -157,4 +157,4 @@ class NewsAggregator:
                     counter[t] += 1
         if counter:
             return counter.most_common(1)[0][0]
-        return (cluster[0].post.title or "")[:60]
+        return (cluster[0].article.title or cluster[0].post.title or "")[:60]
