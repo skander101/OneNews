@@ -14,6 +14,18 @@ from src.presenter import NewsPresenter
 
 logger = logging.getLogger(__name__)
 
+NAWAAT_DOMAINS = {"nawaat.org", "www.nawaat.org"}
+
+
+def _translate_text(text: str, target: str = "en") -> str:
+    if not text or len(text.strip()) < 3:
+        return text
+    try:
+        from deep_translator import GoogleTranslator
+        return GoogleTranslator(source="auto", target=target).translate(text)
+    except Exception:
+        return text
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="OneNews — RSS news aggregator")
@@ -47,6 +59,22 @@ def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = Fal
             item.article = article
     else:
         logger.info("═══  Extraction skipped (articles already loaded)  ═══")
+
+    logger.info("═══  Translating Nawaat articles  ═══")
+    for item in items:
+        art = item.article
+        post = item.post
+        if not art or not post or not post.source_domain:
+            continue
+        if post.source_domain not in NAWAAT_DOMAINS:
+            continue
+        t_title = _translate_text(art.title)
+        if t_title and t_title != art.title:
+            logger.info("  Title: %s → %s", art.title[:50], t_title[:50])
+            art.title = t_title
+        t_text = _translate_text(art.text)
+        if t_text and t_text != art.text:
+            art.text = t_text
 
     logger.info("═══  Analysing articles  ═══")
     analyzer = NewsAnalyzer(cfg)
