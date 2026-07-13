@@ -16,13 +16,18 @@ logger = logging.getLogger(__name__)
 
 NAWAAT_DOMAINS = {"nawaat.org", "www.nawaat.org"}
 
+_translator = None
+
 
 def _translate_text(text: str, target: str = "en") -> str:
     if not text or len(text.strip()) < 3:
         return text
+    global _translator
     try:
-        from googletrans import Translator
-        return Translator().translate(text[:2000], dest=target).text[:len(text)]
+        if _translator is None:
+            from googletrans import Translator
+            _translator = Translator()
+        return _translator.translate(text[:2000], dest=target).text
     except Exception:
         return text
 
