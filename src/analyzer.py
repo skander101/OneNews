@@ -15,6 +15,7 @@ RELIABLE_DOMAINS = {
     "washingtonpost.com": 0.10, "ft.com": 0.14, "bloomberg.com": 0.12,
     "sciencenews.org": 0.14, "medscape.com": 0.12, "nih.gov": 0.16,
     "news.harvard.edu": 0.14, "nawaat.org": 0.12, "tunisienumerique.com": 0.10,
+    "lapresse.tn": 0.12, "allafrica.com": 0.10,
 }
 
 UNRELIABLE_DOMAINS = {
@@ -361,6 +362,18 @@ SPONSOR_INFO: dict[str, dict] = {
         "display": "Tunisie Numérique", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed",
         "owners": ["A. Ben Hassan (founder)"],
         "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "lapresse.tn": {
+        "display": "La Presse de Tunisie", "parent": "Société Nouvelle d'Impression de la Presse", "category": "corporate", "bias": "center", "factuality": "high",
+        "owners": ["SNIP (Société Nouvelle d'Impression de la Presse)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/La_Presse_de_Tunisie",
+        "owner_wikis": {},
+    },
+    "allafrica.com": {
+        "display": "AllAfrica", "parent": "AllAfrica Global Media", "category": "independent", "bias": "center", "factuality": "high",
+        "owners": ["AllAfrica Global Media (non-profit)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/AllAfrica.com",
         "owner_wikis": {},
     },
 }
@@ -757,6 +770,8 @@ class NewsAnalyzer:
         "tunisiaonlinenews.com": "tunisia",
         "nawaat.org": "tunisia",
         "tunisienumerique.com": "tunisia",
+        "lapresse.tn": "tunisia",
+        "allafrica.com": "tunisia",
         "sciencenews.org": "health",
         "medscape.com": "health",
         "nih.gov": "health",

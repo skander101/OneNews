@@ -68,6 +68,8 @@ class Config:
         "https://www.africanews.com/feed/",
         "https://nawaat.org/feed/",
         "https://www.tunisienumerique.com/feed-actualites-tunisie.xml",
+        "https://lapresse.tn/feed/",
+        "https://allafrica.com/tools/headlines/rdf/tunisia/headlines.rdf",
     ])
 
     # Fallback subreddits (used for --source reddit or --source rss)

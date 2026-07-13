@@ -69,6 +69,8 @@ DEFAULT_FEEDS = [
     "https://www.africanews.com/feed/",
     "https://nawaat.org/feed/",
     "https://www.tunisienumerique.com/feed-actualites-tunisie.xml",
+    "https://lapresse.tn/feed/",
+    "https://allafrica.com/tools/headlines/rdf/tunisia/headlines.rdf",
 ]
 
 
