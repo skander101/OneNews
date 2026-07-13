@@ -1,5 +1,7 @@
 import logging
+import re
 import time
+from datetime import datetime
 from urllib.parse import urljoin, urlparse
 
 import requests
@@ -60,6 +62,7 @@ class HTMLSiteScraper:
                         continue
                     seen_urls.add(full_url)
                     domain = site.get("domain") or urlparse(full_url).netloc
+                    published, published_iso = self._extract_date(soup, a_tag)
                     post = RedditPost(
                         id=full_url,
                         title=title,
@@ -69,8 +72,8 @@ class HTMLSiteScraper:
                         num_comments=0,
                         source_domain=domain,
                         image_url="",
-                        published="",
-                        published_iso="",
+                        published=published,
+                        published_iso=published_iso,
                     )
                     posts.append(post)
             except Exception as exc:
@@ -79,9 +82,70 @@ class HTMLSiteScraper:
         return posts
 
     @staticmethod
+    def _extract_date(soup: BeautifulSoup, a_tag) -> tuple[str, str]:
+        for parent_tag in ("div", "article", "li", "section"):
+            parent = a_tag.find_parent(parent_tag)
+            if not parent:
+                continue
+            time_tag = parent.find("time")
+            if time_tag:
+                raw = time_tag.get("datetime") or time_tag.get_text(strip=True)
+                if raw:
+                    parsed = _parse_date_str(raw)
+                    if parsed:
+                        return parsed
+            date_el = parent.find(["span", "div"], class_=re.compile(r"date|time", re.I))
+            if date_el:
+                raw = date_el.get("datetime") or date_el.get_text(strip=True)
+                if raw:
+                    parsed = _parse_date_str(raw)
+                    if parsed:
+                        return parsed
+        return ("", "")
+
+    @staticmethod
     def _find_article_links(soup: BeautifulSoup, site: dict) -> list:
         for selector in site["selectors"]:
             found = soup.select(selector)
             if found:
                 return found
         return []
+
+
+_DATE_FORMATS = [
+    "%Y-%m-%dT%H:%M:%S%z",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y-%m-%d",
+    "%d %b %Y",
+    "%d %B %Y",
+    "%b %d, %Y",
+    "%B %d, %Y",
+    "%d/%m/%Y",
+    "%m/%d/%Y",
+]
+
+
+def _parse_date_str(raw: str) -> tuple[str, str] | None:
+    raw = raw.strip()
+    if not raw:
+        return None
+    for fmt in _DATE_FORMATS:
+        try:
+            dt = datetime.strptime(raw, fmt)
+            if dt.tzinfo:
+                display = dt.strftime("%d %b %Y")
+                iso = dt.strftime("%Y-%m-%d")
+            else:
+                display = dt.strftime("%d %b %Y")
+                iso = dt.strftime("%Y-%m-%d")
+            return (display, iso)
+        except ValueError:
+            continue
+    try:
+        dt = datetime.fromisoformat(raw)
+        display = dt.strftime("%d %b %Y")
+        iso = dt.strftime("%Y-%m-%d")
+        return (display, iso)
+    except (ValueError, TypeError):
+        pass
+    return None
