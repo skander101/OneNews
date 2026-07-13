@@ -22,7 +22,10 @@ function groupByDate(clusters) {
     if (b[0] === 'Unknown') return -1
     return b[0].localeCompare(a[0])
   })
-  return sorted.map(([date, items]) => ({ date, items }))
+  return sorted.map(([date, items]) => ({
+    date,
+    items: items.sort((a, b) => (b.score || 0) - (a.score || 0)),
+  }))
 }
 
 function SafeImage({ src, className, wrapClass }) {
