@@ -33,14 +33,19 @@ class ArticleExtractor:
         downloaded = self._trafilatura.fetch_url(url)
         if not downloaded:
             return None
-        result = self._trafilatura.extract(downloaded, output_format='python')
-        if not result or not result.get('text'):
+        text = self._trafilatura.extract(downloaded)
+        if not text:
             return None
-        text = result['text']
-        title = result.get('title') or self._extract_title_meta(downloaded) or ""
-        soup = BeautifulSoup(downloaded, "html.parser")
-        image = self._extract_og_image_soup(soup)
-        published, published_iso = self._parse_trafilatura_date(result.get('date'))
+        doc = self._trafilatura.bare_extraction(downloaded, with_metadata=True)
+        title = (doc.title if doc else None) or self._extract_title_meta(downloaded) or ""
+        image = ""
+        published, published_iso = ("", "")
+        if doc:
+            image = doc.image or ""
+            published, published_iso = self._parse_trafilatura_date(doc.date)
+        if not image:
+            soup = BeautifulSoup(downloaded, "html.parser")
+            image = self._extract_og_image_soup(soup)
         return Article(
             url=url, title=title, text=text, source_domain=domain,
             image_url=image, published=published, published_iso=published_iso,
