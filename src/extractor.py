@@ -38,7 +38,8 @@ class ArticleExtractor:
             return None
         text = result['text']
         title = result.get('title') or self._extract_title_meta(downloaded) or ""
-        image = self._extract_og_image(downloaded)
+        soup = BeautifulSoup(downloaded, "html.parser")
+        image = self._extract_og_image_soup(soup)
         published, published_iso = self._parse_trafilatura_date(result.get('date'))
         return Article(
             url=url, title=title, text=text, source_domain=domain,
@@ -98,21 +99,6 @@ class ArticleExtractor:
         return html_mod.unescape(m.group(1).strip()) if m else None
 
     @staticmethod
-    def _extract_og_image(html: str) -> str:
-        import re
-        m = re.search(
-            r'<meta\s+[^>]*property=["\']og:image["\'][^>]*content=["\']([^"\']+)["\']',
-            html, re.IGNORECASE,
-        )
-        if m:
-            return m.group(1)
-        m = re.search(
-            r'<meta\s+[^>]*content=["\']([^"\']+)["\'][^>]*property=["\']og:image["\']',
-            html, re.IGNORECASE,
-        )
-        return m.group(1) if m else ""
-
-    @staticmethod
     def _extract_fallback_date(soup) -> tuple[str, str]:
         from datetime import datetime
         time_tag = soup.find("time")
@@ -155,10 +141,13 @@ class ArticleExtractor:
 
     @staticmethod
     def _extract_og_image_soup(soup) -> str:
-        for prop in ("og:image", "twitter:image"):
+        for prop in ("og:image", "twitter:image", "article:image"):
             tag = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
             if tag and tag.get("content"):
                 return tag["content"]
+        link = soup.find("link", rel="image_src")
+        if link and link.get("href"):
+            return link["href"]
         return ""
 
 
