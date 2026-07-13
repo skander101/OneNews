@@ -14,7 +14,7 @@ RELIABLE_DOMAINS = {
     "sciencedaily.com": 0.14, "theguardian.com": 0.08, "nytimes.com": 0.10,
     "washingtonpost.com": 0.10, "ft.com": 0.14, "bloomberg.com": 0.12,
     "sciencenews.org": 0.14, "medscape.com": 0.12, "nih.gov": 0.16,
-    "news.harvard.edu": 0.14,
+    "news.harvard.edu": 0.14, "nawaat.org": 0.12, "tunisienumerique.com": 0.10,
 }
 
 UNRELIABLE_DOMAINS = {
@@ -349,6 +349,18 @@ SPONSOR_INFO: dict[str, dict] = {
         "display": "Africa News", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "high",
         "owners": ["Independent (NGO-funded)"],
         "wikipedia": "https://en.wikipedia.org/wiki/Africa_News",
+        "owner_wikis": {},
+    },
+    "nawaat.org": {
+        "display": "Nawaat", "parent": "Independent", "category": "independent", "bias": "left-center", "factuality": "high",
+        "owners": ["Independent editorial team (Tunisia-based, reader-supported)"],
+        "wikipedia": "https://en.wikipedia.org/wiki/Nawaat",
+        "owner_wikis": {},
+    },
+    "tunisienumerique.com": {
+        "display": "Tunisie Numérique", "parent": "Independent", "category": "independent", "bias": "center", "factuality": "mixed",
+        "owners": ["A. Ben Hassan (founder)"],
+        "wikipedia": "",
         "owner_wikis": {},
     },
 }
@@ -743,6 +755,8 @@ class NewsAnalyzer:
         "deadline.com": "movies",
         "screenrant.com": "movies",
         "tunisiaonlinenews.com": "tunisia",
+        "nawaat.org": "tunisia",
+        "tunisienumerique.com": "tunisia",
         "sciencenews.org": "health",
         "medscape.com": "health",
         "nih.gov": "health",
