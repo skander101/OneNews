@@ -14,7 +14,14 @@ from src.presenter import NewsPresenter
 
 logger = logging.getLogger(__name__)
 
-NAWAAT_DOMAINS = {"nawaat.org", "www.nawaat.org"}
+TRANSLATE_DOMAINS = {
+    "nawaat.org", "www.nawaat.org",
+    "tunisienumerique.com", "www.tunisienumerique.com",
+    "lapresse.tn", "www.lapresse.tn",
+    "webmanagercenter.com", "www.webmanagercenter.com",
+    "directinfo.webmanagercenter.com",
+    "tuniscope.com", "www.tuniscope.com",
+}
 
 _translator = None
 
@@ -65,13 +72,14 @@ def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = Fal
     else:
         logger.info("═══  Extraction skipped (articles already loaded)  ═══")
 
-    logger.info("═══  Translating Nawaat articles  ═══")
+    logger.info("═══  Translating Arab/Tunisian articles  ═══")
     for item in items:
         art = item.article
         post = item.post
         if not art or not post or not post.source_domain:
             continue
-        if post.source_domain not in NAWAAT_DOMAINS:
+        domain = post.source_domain.lower()
+        if domain not in TRANSLATE_DOMAINS:
             continue
         t_title = _translate_text(art.title)
         if t_title and t_title != art.title:
@@ -148,11 +156,15 @@ def main():
 
     else:
         from src.rss_feed_scraper import RSSFeedScraper
+        from src.html_scraper import HTMLSiteScraper
         print("═══  Fetching RSS news feeds  ═══")
-        scraper = RSSFeedScraper(cfg)
-        posts = scraper.fetch_posts()
+        rss = RSSFeedScraper(cfg).fetch_posts()
+        print(f"  → {len(rss)} RSS posts collected")
+        print("═══  Scraping HTML sites  ═══")
+        html_posts = HTMLSiteScraper(cfg).fetch_posts()
+        print(f"  → {len(html_posts)} HTML posts collected")
+        posts = rss + html_posts
         n_posts = len(posts)
-        print(f"  → {n_posts} posts collected\n")
         if not posts:
             sys.exit(1)
         items = [NewsItem(post=p) for p in posts]

@@ -16,6 +16,8 @@ RELIABLE_DOMAINS = {
     "sciencenews.org": 0.14, "medscape.com": 0.12, "nih.gov": 0.16,
     "news.harvard.edu": 0.14, "nawaat.org": 0.12, "tunisienumerique.com": 0.10,
     "lapresse.tn": 0.12, "allafrica.com": 0.10,
+    "webmanagercenter.com": 0.08, "directinfo.webmanagercenter.com": 0.08,
+    "tuniscope.com": 0.08,
 }
 
 UNRELIABLE_DOMAINS = {
@@ -374,6 +376,24 @@ SPONSOR_INFO: dict[str, dict] = {
         "display": "AllAfrica", "parent": "AllAfrica Global Media", "category": "independent", "bias": "center", "factuality": "high",
         "owners": ["AllAfrica Global Media (non-profit)"],
         "wikipedia": "https://en.wikipedia.org/wiki/AllAfrica.com",
+        "owner_wikis": {},
+    },
+    "webmanagercenter.com": {
+        "display": "Webmanagercenter", "parent": "Webmanagercenter", "category": "independent", "bias": "center", "factuality": "mixed",
+        "owners": ["Independent (Tunisian editorial team)"],
+        "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "directinfo.webmanagercenter.com": {
+        "display": "Directinfo", "parent": "Webmanagercenter", "category": "independent", "bias": "center", "factuality": "mixed",
+        "owners": ["Independent (Tunisian editorial team)"],
+        "wikipedia": "",
+        "owner_wikis": {},
+    },
+    "tuniscope.com": {
+        "display": "Tuniscope", "parent": "Tuniscope", "category": "independent", "bias": "center", "factuality": "mixed",
+        "owners": ["Independent (Tunisian editorial team)"],
+        "wikipedia": "",
         "owner_wikis": {},
     },
 }
@@ -776,6 +796,9 @@ class NewsAnalyzer:
         "medscape.com": "health",
         "nih.gov": "health",
         "news.harvard.edu": "health",
+        "webmanagercenter.com": "tunisia",
+        "directinfo.webmanagercenter.com": "tunisia",
+        "tuniscope.com": "tunisia",
     }
 
     def _keyword_topic_match(self, article: Article, summary: str) -> list[str]:

@@ -13,6 +13,7 @@ from config import Config
 from main import run_pipeline
 from src.models import NewsItem
 from src.rss_feed_scraper import RSSFeedScraper
+from src.html_scraper import HTMLSiteScraper
 
 logging.basicConfig(level=logging.INFO, format="%(levelname).1s %(message)s", stream=sys.stderr)
 logger = logging.getLogger(__name__)
@@ -117,8 +118,9 @@ def refresh_data():
     with cache_lock:
         cached_status = "running"
     try:
-        scraper = RSSFeedScraper(cfg)
-        posts = scraper.fetch_posts()
+        rss_posts = RSSFeedScraper(cfg).fetch_posts()
+        html_posts = HTMLSiteScraper(cfg).fetch_posts()
+        posts = rss_posts + html_posts
         items = [NewsItem(post=p) for p in posts]
         new_clusters = run_pipeline(items, cfg)
         html_dicts = [_cluster_to_html_dict(c) for c in new_clusters]
