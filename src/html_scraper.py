@@ -63,7 +63,7 @@ class HTMLSiteScraper:
                     seen_urls.add(full_url)
                     domain = site.get("domain") or urlparse(full_url).netloc
                     published, published_iso = self._extract_date(a_tag)
-                    image_url = self._extract_image(a_tag)
+                    image_url = self._extract_image(a_tag, site["url"])
                     post = RedditPost(
                         id=full_url,
                         title=title,
@@ -105,16 +105,19 @@ class HTMLSiteScraper:
         return ("", "")
 
     @staticmethod
-    def _extract_image(a_tag) -> str:
-        for parent_tag in ("div", "article", "li", "section"):
-            parent = a_tag.find_parent(parent_tag)
-            if not parent:
+    def _extract_image(a_tag, base_url: str) -> str:
+        for ancestor in a_tag.parents:
+            if ancestor.name not in ("div", "article", "li", "section"):
                 continue
-            img = parent.find("img")
-            if img:
-                src = img.get("src") or img.get("data-src") or ""
-                if src:
-                    return src
+            img = ancestor.find("img")
+            if not img:
+                continue
+            for attr in ("data-src", "data-lazy-src", "src", "data-srcset", "srcset"):
+                val = img.get(attr, "")
+                if val:
+                    if attr in ("data-srcset", "srcset"):
+                        val = val.split(",")[0].strip().split(" ")[0]
+                    return urljoin(base_url, val)
         return ""
 
     @staticmethod
