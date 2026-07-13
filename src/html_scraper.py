@@ -62,7 +62,8 @@ class HTMLSiteScraper:
                         continue
                     seen_urls.add(full_url)
                     domain = site.get("domain") or urlparse(full_url).netloc
-                    published, published_iso = self._extract_date(soup, a_tag)
+                    published, published_iso = self._extract_date(a_tag)
+                    image_url = self._extract_image(a_tag)
                     post = RedditPost(
                         id=full_url,
                         title=title,
@@ -71,7 +72,7 @@ class HTMLSiteScraper:
                         score=0,
                         num_comments=0,
                         source_domain=domain,
-                        image_url="",
+                        image_url=image_url,
                         published=published,
                         published_iso=published_iso,
                     )
@@ -82,7 +83,7 @@ class HTMLSiteScraper:
         return posts
 
     @staticmethod
-    def _extract_date(soup: BeautifulSoup, a_tag) -> tuple[str, str]:
+    def _extract_date(a_tag) -> tuple[str, str]:
         for parent_tag in ("div", "article", "li", "section"):
             parent = a_tag.find_parent(parent_tag)
             if not parent:
@@ -102,6 +103,19 @@ class HTMLSiteScraper:
                     if parsed:
                         return parsed
         return ("", "")
+
+    @staticmethod
+    def _extract_image(a_tag) -> str:
+        for parent_tag in ("div", "article", "li", "section"):
+            parent = a_tag.find_parent(parent_tag)
+            if not parent:
+                continue
+            img = parent.find("img")
+            if img:
+                src = img.get("src") or img.get("data-src") or ""
+                if src:
+                    return src
+        return ""
 
     @staticmethod
     def _find_article_links(soup: BeautifulSoup, site: dict) -> list:
