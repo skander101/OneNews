@@ -33,12 +33,17 @@ class ArticleExtractor:
         downloaded = self._trafilatura.fetch_url(url)
         if not downloaded:
             return None
-        text = self._trafilatura.extract(downloaded)
-        if not text:
+        result = self._trafilatura.extract(downloaded, output_format='python')
+        if not result or not result.get('text'):
             return None
-        title = self._extract_title_meta(downloaded) or ""
+        text = result['text']
+        title = result.get('title') or self._extract_title_meta(downloaded) or ""
         image = self._extract_og_image(downloaded)
-        return Article(url=url, title=title, text=text, source_domain=domain, image_url=image)
+        published, published_iso = self._parse_trafilatura_date(result.get('date'))
+        return Article(
+            url=url, title=title, text=text, source_domain=domain,
+            image_url=image, published=published, published_iso=published_iso,
+        )
 
     def _extract_fallback(self, url: str, domain: str) -> Optional[Article]:
         resp = requests.get(url, headers={"User-Agent": "newsapp/1.0"}, timeout=15)
@@ -50,12 +55,40 @@ class ArticleExtractor:
             title = soup.title.get_text(strip=True)
 
         image = self._extract_og_image_soup(soup)
+        published, published_iso = self._extract_fallback_date(soup)
 
         paragraphs = soup.find_all("p")
         text = "\n\n".join(p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True))
         if not text:
             return None
-        return Article(url=url, title=title, text=text, source_domain=domain, image_url=image)
+        return Article(
+            url=url, title=title, text=text, source_domain=domain,
+            image_url=image, published=published, published_iso=published_iso,
+        )
+
+    @staticmethod
+    def _parse_trafilatura_date(raw_date: str | None) -> tuple[str, str]:
+        if not raw_date:
+            return ("", "")
+        from datetime import datetime
+        for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+            try:
+                dt = datetime.strptime(raw_date.strip(), fmt)
+                return (dt.strftime("%d %b %Y"), dt.strftime("%Y-%m-%d"))
+            except ValueError:
+                continue
+        try:
+            dt = datetime.fromisoformat(raw_date.strip())
+            return (dt.strftime("%d %b %Y"), dt.strftime("%Y-%m-%d"))
+        except (ValueError, TypeError):
+            pass
+        if len(raw_date) >= 10:
+            try:
+                dt = datetime.strptime(raw_date[:10], "%Y-%m-%d")
+                return (dt.strftime("%d %b %Y"), raw_date[:10])
+            except ValueError:
+                pass
+        return ("", "")
 
     @staticmethod
     def _extract_title_meta(html: str) -> Optional[str]:
@@ -78,6 +111,47 @@ class ArticleExtractor:
             html, re.IGNORECASE,
         )
         return m.group(1) if m else ""
+
+    @staticmethod
+    def _extract_fallback_date(soup) -> tuple[str, str]:
+        from datetime import datetime
+        time_tag = soup.find("time")
+        if time_tag:
+            raw = time_tag.get("datetime") or time_tag.get_text(strip=True)
+            if raw:
+                for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+                    try:
+                        dt = datetime.strptime(raw.strip(), fmt)
+                        return (dt.strftime("%d %b %Y"), dt.strftime("%Y-%m-%d"))
+                    except ValueError:
+                        continue
+                try:
+                    dt = datetime.fromisoformat(raw.strip())
+                    return (dt.strftime("%d %b %Y"), dt.strftime("%Y-%m-%d"))
+                except (ValueError, TypeError):
+                    pass
+        for prop in ("article:published_time", "date"):
+            tag = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
+            if tag and tag.get("content"):
+                raw = tag["content"].strip()
+                for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+                    try:
+                        dt = datetime.strptime(raw, fmt)
+                        return (dt.strftime("%d %b %Y"), dt.strftime("%Y-%m-%d"))
+                    except ValueError:
+                        continue
+                try:
+                    dt = datetime.fromisoformat(raw)
+                    return (dt.strftime("%d %b %Y"), dt.strftime("%Y-%m-%d"))
+                except (ValueError, TypeError):
+                    pass
+                if len(raw) >= 10:
+                    try:
+                        dt = datetime.strptime(raw[:10], "%Y-%m-%d")
+                        return (dt.strftime("%d %b %Y"), raw[:10])
+                    except ValueError:
+                        pass
+        return ("", "")
 
     @staticmethod
     def _extract_og_image_soup(soup) -> str:

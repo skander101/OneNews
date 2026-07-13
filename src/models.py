@@ -24,6 +24,8 @@ class Article:
     source_domain: str
     extraction_success: bool = True
     image_url: str = ""
+    published: str = ""
+    published_iso: str = ""
 
 
 @dataclass

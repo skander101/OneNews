@@ -26,7 +26,7 @@ class NewsPresenter:
 
         for cat in NewsPresenter.CATEGORIES:
             items = by_cat.get(cat, [])
-            items.sort(key=lambda x: (x.articles[0].post.published_iso or "", x.final_score), reverse=True)
+            items.sort(key=lambda x: (x.articles[0].article.published_iso or x.articles[0].post.published_iso or "", x.final_score), reverse=True)
             items = items[:top_n]
             if not items:
                 continue
@@ -38,8 +38,9 @@ class NewsPresenter:
                 item = cluster.articles[0]
                 title = item.article.title[:72] + "…" if item.article.title and len(item.article.title) > 72 else (item.article.title or item.post.title)
                 print(f"       {title}")
-                if item.post.published:
-                    print(f"       📅 {item.post.published}")
+                published = item.article.published or item.post.published
+                if published:
+                    print(f"       📅 {published}")
                 if item.analysis and item.analysis.summary:
                     short = item.analysis.summary[:72] + "…" if len(item.analysis.summary) > 72 else item.analysis.summary
                     print(f"       → {short}")

@@ -61,8 +61,8 @@ def serialize_clusters(clusters):
                     "comments": a.post.num_comments,
                     "url": a.post.url,
                     "image": a.article.image_url if a.article else a.post.image_url,
-                    "published": a.post.published,
-                    "published_iso": a.post.published_iso,
+                    "published": a.article.published or a.post.published,
+                    "published_iso": a.article.published_iso or a.post.published_iso,
                 }
                 for a in c.articles[:5]
             ],
@@ -92,8 +92,8 @@ def serialize_clusters(clusters):
                     "score": a.post.score,
                     "comments": a.post.num_comments,
                     "image": a.article.image_url if a.article else a.post.image_url,
-                    "published": a.post.published,
-                    "published_iso": a.post.published_iso,
+                    "published": a.article.published or a.post.published,
+                    "published_iso": a.article.published_iso or a.post.published_iso,
                 }
                 for a in c.articles[:5]
             ],

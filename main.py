@@ -66,6 +66,8 @@ def run_pipeline(items: list[NewsItem], cfg: Config, skip_extraction: bool = Fal
                     source_domain=item.post.source_domain or "reddit.com",
                     extraction_success=False,
                     image_url=item.post.image_url,
+                    published=item.post.published,
+                    published_iso=item.post.published_iso,
                 )
                 logger.info("  [%2d/%d] %-60s ✗  (title only)", i, len(items), item.post.title[:60])
             item.article = article
