@@ -6,7 +6,7 @@ import threading
 from collections import defaultdict
 from datetime import datetime, timezone
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 from config import Config
@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 cfg = Config()
 
 app = Flask(__name__)
-app.config["TEMPLATES_AUTO_RELOAD"] = True
 CORS(app, origins=cfg.cors_origins.split(",") if cfg.cors_origins != "*" else "*")
 
 cache_lock = threading.Lock()
@@ -164,30 +163,17 @@ def _load_cache():
         return None
 
 
-# ---- Web UI ----
+# ---- Web UI (React SPA) ----
+
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "frontend", "dist")
 
 @app.route("/")
 def index():
-    with cache_lock:
-        bc = cached_by_cat
-        status = cached_status
-    grouped_by_date = {}
-    for cat in CATEGORIES:
-        items = bc.get(cat, [])
-        items.sort(key=lambda x: (x["articles"][0]["published_iso"] or "", x["score"]), reverse=True)
-        date_groups = []
-        seen_date = None
-        for item in items:
-            d = item["articles"][0]["published"] or "Unknown"
-            if d != seen_date:
-                date_groups.append({"date": d, "items": []})
-                seen_date = d
-            date_groups[-1]["items"].append(item)
-        grouped_by_date[cat] = date_groups
+    return send_from_directory(FRONTEND_DIST, "index.html")
 
-    total = sum(len(g["items"]) for groups in grouped_by_date.values() for g in groups)
-    tab_counts = {cat: sum(len(g["items"]) for g in grouped_by_date[cat]) for cat in CATEGORIES}
-    return render_template("index.html", grouped_by_date=grouped_by_date, categories=CATEGORIES, status=status, total=total, tab_counts=tab_counts)
+@app.route("/assets/<path:filename>")
+def serve_assets(filename):
+    return send_from_directory(os.path.join(FRONTEND_DIST, "assets"), filename)
 
 
 # ---- REST API ----

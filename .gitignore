@@ -1,24 +1,8 @@
-# Python
 __pycache__/
-*.py[cod]
-*.egg-info/
+*.pyc
 venv/
 .env
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-/tmp/
-
-# Project specific
-static/
-DEPLOY.md
+*.egg-info/
+/dist/
+!frontend/dist/
+node_modules/
