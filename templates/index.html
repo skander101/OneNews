@@ -503,20 +503,14 @@ window.addEventListener('resize', function() {
   if (at) moveUnderline(at);
 });
 
-/* ── Skeleton removal + card stagger reveal ── */
+/* ── Skeleton removal + scroll-based card reveal ── */
 function revealCards(tabId) {
   var tc = document.getElementById('tab-' + tabId);
   if (!tc) return;
   var skeleton = tc.querySelector('.skeleton-container');
-  if (skeleton) {
-    skeleton.style.display = 'none';
-  }
-  var cards = tc.querySelectorAll('.card:not(.revealed)');
-  cards.forEach(function(c, i) {
-    setTimeout(function() {
-      c.classList.add('revealed');
-      animateScoreBar(c);
-    }, i * 60);
+  if (skeleton) skeleton.style.display = 'none';
+  tc.querySelectorAll('.card:not(.revealed)').forEach(function(c) {
+    cardObserver.observe(c);
   });
 }
 
@@ -553,22 +547,16 @@ function animateCounters() {
   });
 }
 
-/* ── Scroll reveal ── */
-var observer = new IntersectionObserver(function(entries) {
+/* ── Scroll reveal (single observer for all cards) ── */
+var cardObserver = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
     if (entry.isIntersecting) {
       entry.target.classList.add('revealed');
       animateScoreBar(entry.target);
-      observer.unobserve(entry.target);
+      cardObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px 40px 0px' });
-
-function observeCards() {
-  document.querySelectorAll('.card:not(.revealed)').forEach(function(c) {
-    observer.observe(c);
-  });
-}
 
 /* ── Sponsor modal ── */
 document.querySelectorAll('.btn-primary[data-sponsor]').forEach(function(btn) {
@@ -638,11 +626,9 @@ document.addEventListener('keydown', function(e) {
 
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', function() {
-  /* Reveal first tab's cards */
+  animateCounters();
   var firstTab = document.querySelector('.tab.active');
   if (firstTab) revealCards(firstTab.dataset.tab);
-  animateCounters();
-  observeCards();
 });
 </script>
 </body>
