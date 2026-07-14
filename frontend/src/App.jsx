@@ -11,20 +11,22 @@ const CAT_LABELS = {
 }
 
 function groupByDate(clusters) {
+  const getDate = (c) => c.articles[0]?.published_iso || ''
+  const getDisplay = (c) => c.articles[0]?.published || 'Unknown'
   const map = {}
   for (const c of clusters) {
-    const d = c.articles[0]?.published || 'Unknown'
-    if (!map[d]) map[d] = []
-    map[d].push(c)
+    const key = getDate(c)
+    if (!map[key]) map[key] = { display: getDisplay(c), items: [] }
+    map[key].items.push(c)
   }
   const sorted = Object.entries(map).sort((a, b) => {
-    if (a[0] === 'Unknown') return 1
-    if (b[0] === 'Unknown') return -1
+    if (!a[0]) return 1
+    if (!b[0]) return -1
     return b[0].localeCompare(a[0])
   })
-  return sorted.map(([date, items]) => ({
-    date,
-    items: items.sort((a, b) => (b.final_score || 0) - (a.final_score || 0)),
+  return sorted.map(([, group]) => ({
+    date: group.display,
+    items: group.items.sort((a, b) => (b.final_score || 0) - (a.final_score || 0)),
   }))
 }
 
