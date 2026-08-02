@@ -1,0 +1,15 @@
+name: Keep Space Awake
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Space health endpoint
+        run: |
+          curl -s -o /dev/null -w "health: %{http_code}\n" \
+            --max-time 60 \
+            "https://skander101-deployables.hf.space/health"

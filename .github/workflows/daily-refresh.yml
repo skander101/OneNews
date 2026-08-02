@@ -1,0 +1,18 @@
+name: Daily Refresh
+
+on:
+  schedule:
+    - cron: '30 3 * * *'
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger pipeline refresh
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 300 \
+            -X POST \
+            "https://skander101-deployables.hf.space/api/v1/refresh")
+          echo "refresh trigger: $code"
+          if [ "$code" != "202" ]; then exit 1; fi
