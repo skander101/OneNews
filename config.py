@@ -102,6 +102,6 @@ class Config:
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
     flask_env: str = os.getenv("FLASK_ENV", "production")
     cors_origins: str = os.getenv("CORS_ORIGINS", "*")
-    refresh_hour: int = int(os.getenv("REFRESH_HOUR", "4"))
+    refresh_hour: int = int(os.getenv("REFRESH_HOUR", "8"))
     refresh_minute: int = int(os.getenv("REFRESH_MINUTE", "0"))
     refresh_timezone: str = os.getenv("REFRESH_TIMEZONE", "Africa/Tunis")
